@@ -1,6 +1,32 @@
-name,country,sector,key_products,notes
-Lockheed Martin,USA,Aerospace,F-35,Major U.S. defense contractor
-Raytheon,USA,Missiles,Patriot Missiles,Merger with UTC
-BAE Systems,UK,General,Artillery systems,Strong NATO links
-Thales,France,Electronics,Drones and radar,EU leader in cyber & defense
-Saab,Sweden,Aerospace,Gripen fighter,Exports to multiple countries
+name,ticker,country
+Lockheed Martin,LMT,USA
+Raytheon Technologies,RTX,USA
+Northrop Grumman,NOC,USA
+General Dynamics,GD,USA
+BAE Systems,BAESY,UK
+Thales,HO.PA,France
+Saab AB,SAAB-B.ST,Sweden
+Leonardo S.p.A.,FINMY,Italy
+Elbit Systems,ESLT,Israel
+Rheinmetall,RNMBF,Germany
+Kongsberg Gruppen,KOG.OL,Norway
+Boeing Defense,BA,USA
+Airbus,EADSY,Netherlands
+Hanwha Aerospace,012450.KQ,South Korea
+China North Industries (Norinco),Not Public,China
+AVIC,Not Public,China
+Mitsubishi Heavy Industries,7011.T,Japan
+Israel Aerospace Industries,Not Public,Israel
+Denel,Not Public,South Africa
+Textron,TXT,USA
+L3Harris Technologies,LHX,USA
+Huntington Ingalls Industries,HII,USA
+Turkish Aerospace Industries,Not Public,Turkey
+Navantia,Not Public,Spain
+Embraer Defense,ERJ,Brazil
+Oshkosh Corporation,OSK,USA
+Curtiss-Wright,CW,USA
+Kratos Defense,KTOS,USA
+CACI International,CACI,USA
+Leidos,LDOS,USA
+Mercury Systems,MRCY,USA
