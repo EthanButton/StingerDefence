@@ -32,3 +32,4 @@ def fetch_dod_contracts():
 
 if __name__ == "__main__":
     fetch_dod_contracts()
+    print("✅ Scraper completed successfully.")
