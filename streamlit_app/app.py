@@ -7,44 +7,20 @@ import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from fetchers.fetch_dod_contracts import fetch_dod_contracts
-import time
+st.subheader("📰 Latest Defense News")
 
-st.set_page_config(page_title="Stinger Defence", layout="wide")
-st.title("🛡️ Stinger Defence: Global Defense Market Tracker")
-
-REFRESH_INTERVAL = 1800
-if "last_refresh" not in st.session_state:
-    st.session_state.last_refresh = time.time()
-if time.time() - st.session_state.last_refresh > REFRESH_INTERVAL:
-    try:
-        fetch_dod_contracts()
-        st.session_state.last_refresh = time.time()
-    except:
-        st.warning("⚠️ Could not auto-refresh DoD contracts.")
-
-if st.button("🔄 Refresh Contracts Now"):
-    try:
-        fetch_dod_contracts()
-        st.success("Contracts updated.")
-    except:
-        st.error("❌ Failed to update contracts.")
-
-st.subheader("📄 Latest U.S. Defense Contracts")
 try:
-    df_contracts = pd.read_csv("data/dod_contracts.csv")
-    st.dataframe(df_contracts[["date", "title", "summary", "link"]])
+    df_news = pd.read_csv("data/defense_news.csv")
 
-    companies = pd.read_csv("data/defense_companies.csv")["name"].str.lower()
-    matched = df_contracts[df_contracts["summary"].str.lower().apply(lambda s: any(name in s for name in companies))]
-
-    if not matched.empty:
-        st.error("⚠️ Recent contracts include tracked companies:")
-        st.dataframe(matched)
+    if df_news.empty:
+        st.info("No news articles found.")
     else:
-        st.success("✅ No tracked companies found in recent contracts.")
-except Exception as e:
-    st.warning("No contract data available. Waiting for update.")
+        for _, row in df_news.iterrows():
+            st.markdown(f"**{row['company']}** — [{row['title']}]({row['link']})")
+            st.caption(f"Published: {row['published']}")
+            st.markdown("---")
+except FileNotFoundError:
+    st.warning("⚠️ News feed not available yet. Please wait for it to update.")
 
 st.subheader("🏢 Global Defense Companies")
 try:
