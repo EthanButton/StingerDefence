@@ -8,6 +8,7 @@ def fetch_dod_contracts():
     response = requests.get(url)
     soup = BeautifulSoup(response.text, "html.parser")
     articles = soup.find_all("article", class_="contract")
+    print(f"Found {len(articles)} contract articles.")
     data = []
 
     for article in articles:
