@@ -22,12 +22,12 @@ jobs:
       - name: Run scraper
         run: python fetchers/fetch_dod_contracts.py
 
-      - name: Commit data
+      - name: Commit data and push
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
           git add data/dod_contracts.csv || echo "No file to add"
           timestamp=$(date)
           git commit -m "Auto-update DoD contracts at $timestamp" || echo "No changes to commit"
-          git pull --rebase
-          git push
+          git pull --rebase || echo "Nothing to pull"
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main
