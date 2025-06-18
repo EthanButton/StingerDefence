@@ -14,17 +14,29 @@ st.markdown("---")
 
 # ========== NEWS SECTION ==========
 st.subheader("📰 Latest Defense News")
+
 try:
     df_news = pd.read_csv("data/defense_news.csv")
+
+    company_list = sorted(df_news["company"].unique())
+    selected_company = st.selectbox("Filter news by company", ["All"] + company_list)
+
+    if selected_company != "All":
+        df_news = df_news[df_news["company"] == selected_company]
 
     if df_news.empty:
         st.info("No news articles found.")
     else:
         for _, row in df_news.iterrows():
-            st.markdown(f"""
-**[{row['title']}]({row['link']})**  
-📅 *{row['published']}* | 🏢 *{row['company']}*  
-            """)
+            st.markdown(f"### 🔹 {row['title']}")
+            st.caption(f"🕒 {row['published']} — 🏢 {row['company']}")
+            st.markdown(f"[Read More]({row['link']})")
+
+            summary_text = row['title']
+            if len(summary_text) > 300:
+                summary_text = summary_text[:297] + "..."
+            st.markdown(f"📝 **Summary:** {summary_text}")
+
             st.markdown("---")
 except FileNotFoundError:
     st.warning("⚠️ News feed not available yet. Please wait for it to update.")
