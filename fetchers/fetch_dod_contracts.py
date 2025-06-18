@@ -9,7 +9,7 @@ def fetch_dod_contracts():
         "User-Agent": "Mozilla/5.0"
     }
     response = requests.get(url, headers=headers)
-    response.raise_for_status()  # raise error if site is down
+    response.raise_for_status()
 
     soup = BeautifulSoup(response.text, "html.parser")
     articles = soup.find_all("article", class_="contract")
