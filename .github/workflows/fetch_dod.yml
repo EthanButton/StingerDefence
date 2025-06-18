@@ -2,7 +2,7 @@ name: Auto Fetch DoD Contracts
 
 on:
   schedule:
-    - cron: "*/30 * * * *"
+    - cron: "*/30 * * * *"  # every 30 minutes
   workflow_dispatch:
 
 jobs:
@@ -29,5 +29,4 @@ jobs:
           git add data/dod_contracts.csv || echo "No file to add"
           timestamp=$(date)
           git commit -m "Auto-update DoD contracts at $timestamp" || echo "No changes to commit"
-
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main
