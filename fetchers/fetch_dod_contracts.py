@@ -22,4 +22,6 @@ def fetch_dod_contracts():
         })
 
     df = pd.DataFrame(data)
+    import os
+os.makedirs("data", exist_ok=True)
     df.to_csv("data/dod_contracts.csv", index=False)
