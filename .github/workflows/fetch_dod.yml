@@ -17,7 +17,7 @@ jobs:
           python-version: '3.x'
 
       - name: Install dependencies
-        run: pip install requests pandas beautifulsoup4
+        run: pip install requests pandas beautifulsoup4 feedparser
 
       - name: Run scraper
         run: python fetchers/fetch_dod_contracts.py
