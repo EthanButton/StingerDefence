@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 def fetch_dod_contracts():
     url = "https://www.defense.gov/News/Contracts/"
     headers = {
-        "User-Agent": "Mozilla/5.0"
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0 Safari/537.36"
     }
     response = requests.get(url, headers=headers)
     response.raise_for_status()
