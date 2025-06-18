@@ -1,3 +1,4 @@
+
 name: Auto Fetch DoD Contracts
 
 on:
@@ -17,8 +18,7 @@ jobs:
           python-version: '3.x'
 
       - name: Install dependencies
-        run: |
-          pip install requests pandas beautifulsoup4
+        run: pip install requests pandas beautifulsoup4
 
       - name: Run scraper
         run: python fetchers/fetch_dod_contracts.py
