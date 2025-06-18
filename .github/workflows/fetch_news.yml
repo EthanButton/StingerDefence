@@ -1,0 +1,32 @@
+name: Auto Fetch Defense News
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: pip install pandas feedparser
+
+      - name: Run defense news scraper
+        run: python fetchers/fetch_defense_news.py
+
+      - name: Commit updated news
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
+          git pull --rebase
+          git add data/defense_news.csv
+          git commit -m "Auto-update news" || echo "No changes"
+          git push
