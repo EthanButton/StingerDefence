@@ -17,8 +17,8 @@ jobs:
           python-version: '3.x'
 
       - name: Install dependencies
-        run: pip install pandas feedparser newspaper3k
-
+        run: |
+          pip install -r requirements.txt
       - name: Run defense news scraper
         run: python fetchers/fetch_defense_news.py
 
