@@ -13,33 +13,58 @@ st.caption("Global Defense Market Dashboard — Stocks, News & Companies")
 st.markdown("---")
 
 # ========== NEWS SECTION ==========
+import streamlit as st
+import pandas as pd
+import re
+
 st.subheader("📰 Latest Defense News")
 
-try:
-    df_news = pd.read_csv("data/defense_news.csv")
+@st.cache_data(ttl=1800)
+def load_news():
+    try:
+        return pd.read_csv("data/defense_news.csv")
+    except FileNotFoundError:
+        return pd.DataFrame()
 
-    company_list = sorted(df_news["company"].unique())
-    selected_company = st.selectbox("Filter news by company", ["All"] + company_list)
+news_df = load_news()
 
-    if selected_company != "All":
-        df_news = df_news[df_news["company"] == selected_company]
+if news_df.empty:
+    st.warning("⚠️ No news data found.")
+else:
+    companies = sorted(news_df["company"].dropna().unique())
+    selected_company = st.selectbox("Filter by Company", ["All"] + companies)
 
-    if df_news.empty:
-        st.info("No news articles found.")
-    else:
-        for _, row in df_news.iterrows():
-            st.markdown(f"### 🔹 {row['title']}")
-            st.caption(f"🕒 {row['published']} — 🏢 {row['company']}")
-            st.markdown(f"[Read More]({row['link']})")
+    filtered = news_df if selected_company == "All" else news_df[news_df["company"] == selected_company]
+    filtered = filtered.sort_values(by="published", ascending=False)
 
-            summary_text = row['title']
-            if len(summary_text) > 300:
-                summary_text = summary_text[:297] + "..."
-            st.markdown(f"📝 **Summary:** {summary_text}")
+    show_all = st.toggle("Show All News", value=False)
+    news_to_show = filtered if show_all else filtered.head(5)
+
+    st.caption(f"📰 Showing {'all' if show_all else 'latest 5'} news items for **{selected_company}**")
+
+    for _, row in news_to_show.iterrows():
+        with st.container():
+            st.markdown(f"### [{row['title']}]({row['link']})")
+            st.caption(f"📅 {row['published']} — 🏢 {row['company']}")
+
+            # Simple smart summary based on keywords
+            summary_parts = []
+
+            # Detect financial mentions
+            if re.search(r"\$\d+[.\d]*\s*(million|billion)?", row["title"], re.IGNORECASE):
+                summary_parts.append("💰 Possible contract value mentioned.")
+
+            # Detect domain-specific terms
+            keywords = ["missile", "radar", "ship", "drone", "contract", "aircraft", "satellite", "cyber"]
+            matches = [kw for kw in keywords if re.search(kw, row["title"], re.IGNORECASE)]
+
+            if matches:
+                summary_parts.append("🧩 Keywords: " + ", ".join(matches))
+
+            if summary_parts:
+                st.markdown("**🔍 Summary Insight:** " + " | ".join(summary_parts))
 
             st.markdown("---")
-except FileNotFoundError:
-    st.warning("⚠️ News feed not available yet. Please wait for it to update.")
 
 # ========== COMPANIES SECTION ==========
 st.subheader("🏢 Global Defense Companies")
