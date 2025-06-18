@@ -1,3 +1,4 @@
+import os
 import requests
 import pandas as pd
 from bs4 import BeautifulSoup
@@ -21,7 +22,12 @@ def fetch_dod_contracts():
             "link": f"https://www.defense.gov{link}"
         })
 
-    df = pd.DataFrame(data)
-    import os
+    # Ensure the data folder exists
     os.makedirs("data", exist_ok=True)
+
+    # Save to CSV
+    df = pd.DataFrame(data)
     df.to_csv("data/dod_contracts.csv", index=False)
+
+if __name__ == "__main__":
+    fetch_dod_contracts()
