@@ -1,15 +1,16 @@
 import os
 import pandas as pd
 import feedparser
+import sys
 
 def fetch_dod_contracts():
-    # RSS feed URL for official DoD contract announcements
     url = "https://www.defense.gov/News/Contracts/?rss"
-
-    # Parse the RSS feed
     feed = feedparser.parse(url)
-    data = []
 
+    sys.stdout.write(f"📡 RSS Feed status: {feed.get('status', 'unknown')}\n")
+    sys.stdout.write(f"📰 Entries found in RSS feed: {len(feed.entries)}\n")
+
+    data = []
     for entry in feed.entries:
         data.append({
             "date": entry.get("published", ""),
@@ -18,10 +19,7 @@ def fetch_dod_contracts():
             "link": entry.get("link", "")
         })
 
-    # Ensure data directory exists
     os.makedirs("data", exist_ok=True)
-
-    # Save to CSV
     df = pd.DataFrame(data)
     df.to_csv("data/dod_contracts.csv", index=False)
 
