@@ -18,7 +18,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install requests pandas beautifulsoup4 feedparser
+          pip install requests pandas beautifulsoup4
 
       - name: Run scraper
         run: python fetchers/fetch_dod_contracts.py
