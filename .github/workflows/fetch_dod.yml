@@ -2,7 +2,7 @@ name: Auto Fetch DoD Contracts
 
 on:
   schedule:
-    - cron: "*/30 * * * *"  # every 30 minutes
+    - cron: "*/30 * * * *"
   workflow_dispatch:
 
 jobs:
@@ -26,6 +26,8 @@ jobs:
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
-          git add data/dod_contracts.csv
-          git commit -m "Auto-update DoD contracts" || echo "No changes"
+          git add data/dod_contracts.csv || echo "No file to add"
+          timestamp=$(date)
+          git commit -m "Auto-update DoD contracts at $timestamp" || echo "No changes to commit"
+          git pull --rebase
           git push
