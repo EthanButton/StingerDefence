@@ -96,16 +96,20 @@ try:
     df_stocks = pd.read_csv("data/defense_companies.csv")
     df_stocks = df_stocks[df_stocks["ticker"].str.lower() != "not public"]
 
-    name_to_ticker = {}
-    for _, row in df_stocks.iterrows():
-        name_to_ticker[row["name"]] = row["ticker"]
+    name_to_ticker = {row["name"]: row["ticker"] for _, row in df_stocks.iterrows()}
 
     selected = st.multiselect("Select Companies/Indexes", list(name_to_ticker.keys()), default=["Lockheed Martin"])
+    horizon = st.selectbox("Time Range", [
+        "1d", "5d", "1mo", "3mo", "6mo",
+        "ytd", "1y", "2y", "5y", "10y", "max"
+    ])
 
-    horizon = st.selectbox("Time Range", ["7d", "1mo", "3mo", "6mo", "ytd", "1y"])
+    if horizon == "1d":
+        st.info("📅 Intraday data may be unavailable outside of market hours.")
 
     if selected:
         fig = px.line(title="Price Comparison")
+        invalid = []
 
         for name in selected:
             ticker = name_to_ticker[name]
@@ -113,16 +117,16 @@ try:
                 data = yf.Ticker(ticker).history(period=horizon)
                 if not data.empty:
                     fig.add_scatter(x=data.index, y=data["Close"], mode="lines", name=name)
+                else:
+                    invalid.append(name)
             except Exception as e:
-                st.warning(f"⚠️ Could not fetch data for {name}: {e}")
+                invalid.append(name)
+
+        if invalid:
+            st.warning(f"⚠️ Skipped invalid or empty tickers: {', '.join(invalid)}")
 
         st.plotly_chart(fig, use_container_width=True)
     else:
         st.info("Select at least one stock or index to display.")
-
 except Exception as e:
     st.error(f"📉 Could not load stock data: {e}")
-
-# ========== FOOTER ==========
-st.markdown("---")
-st.caption("📡 Data from Yahoo Finance, Google News, and public sources. Auto-updates every 30 minutes.")
