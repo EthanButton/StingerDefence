@@ -95,7 +95,10 @@ st.subheader("📈 Stock & Index Tracker")
 try:
     df_stocks = pd.read_csv("data/defense_companies.csv")
     df_stocks = df_stocks[df_stocks["ticker"].str.lower() != "not public"]
-    stock_name_to_ticker = {row["name"]: row["ticker"] for _, row in df_stocks.iterrows()}
+    # Exclude any known indexes from being loaded as stocks
+all_index_tickers = set(index_tickers.values())
+df_stocks = df_stocks[~df_stocks["ticker"].isin(all_index_tickers)]
+stock_name_to_ticker = {row["name"]: row["ticker"] for _, row in df_stocks.iterrows()}
 
     index_tickers = {
         "S&P 500": "^GSPC", "Nasdaq 100": "^NDX", "Dow Jones": "^DJI",
