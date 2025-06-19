@@ -155,6 +155,7 @@ try:
 
         st.plotly_chart(fig, use_container_width=True, key="main_price_chart")
         # ========== Stinger Defense Index ==========
+                # ========== Stinger Defense Index ==========
         st.markdown("## 🛡️ Stinger Defense Index")
 
         index_series_list = []
@@ -166,8 +167,12 @@ try:
                 if not data.empty:
                     norm_series = (data["Close"] / data["Close"].iloc[0]) * 100
                     index_series_list.append(norm_series)
-            except:
-                continue
+                else:
+                    st.warning(f"⚠️ No data for {name} ({ticker})")
+            except Exception as e:
+                st.warning(f"⚠️ Error for {name} ({ticker}): {e}")
+
+        st.caption(f"📊 Using {len(index_series_list)} companies to compute the index.")
 
         if index_series_list:
             combined_index = pd.concat(index_series_list, axis=1).mean(axis=1)
