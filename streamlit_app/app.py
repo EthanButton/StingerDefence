@@ -155,7 +155,6 @@ try:
 
         st.plotly_chart(fig, use_container_width=True, key="main_price_chart")
         # ========== Stinger Defense Index ==========
-                # ========== Stinger Defense Index ==========
         st.markdown("## 🛡️ Stinger Defense Index")
 
         index_series_list = []
