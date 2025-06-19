@@ -100,8 +100,8 @@ try:
     index_tickers = {
         "S&P 500": "^GSPC", "Nasdaq 100": "^NDX", "Dow Jones": "^DJI",
         "Russell 2000": "^RUT", "FTSE 100": "^FTSE", "Euro Stoxx 50": "^STOXX50E",
-        "DAX": "^GDAXI", "CAC 40": "^FCHI", "Nikkei 225": "^N225", "Hang Seng": "^HSI"
-    }
+        "DAX": "^GDAXI", "CAC 40": "^FCHI", "Nikkei 225": "^N225", "Hang Seng": "^HSI", 
+        "🛡️ Stinger Defense Index": "STINGER_INDEX"    }
 
     col1, col2 = st.columns(2)
     with col1:
