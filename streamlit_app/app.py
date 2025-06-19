@@ -154,7 +154,32 @@ try:
             st.warning(f"⚠️ Skipped: {', '.join(skipped)}")
 
         st.plotly_chart(fig, use_container_width=True, key="main_price_chart")
+        # ========== Stinger Defense Index ==========
+        st.markdown("## 🛡️ Stinger Defense Index")
 
+        index_series_list = []
+
+        for name in stock_name_to_ticker.keys():
+            ticker = stock_name_to_ticker[name]
+            try:
+                data = yf.Ticker(ticker).history(period=horizon)
+                if not data.empty:
+                    norm_series = (data["Close"] / data["Close"].iloc[0]) * 100
+                    index_series_list.append(norm_series)
+            except:
+                continue
+
+        if index_series_list:
+            combined_index = pd.concat(index_series_list, axis=1).mean(axis=1)
+            fig_index = px.line(
+                x=combined_index.index,
+                y=combined_index.values,
+                labels={'x': 'Date', 'y': 'Index Value'},
+                title="🛡️ Stinger Defense Index Performance"
+            )
+            st.plotly_chart(fig_index, use_container_width=True, key="defense_index_plot")
+        else:
+            st.warning("⚠️ Not enough data to compute the custom defense index.")
         # ========== Dynamic Fundamentals Based on Horizon (Multiple Stocks) ==========
         if selected_stocks:
             st.markdown(f"## 🧾 Fundamentals for Selected Stocks ({horizon})")
