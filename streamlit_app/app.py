@@ -95,38 +95,79 @@ st.subheader("📈 Stock & Index Tracker")
 try:
     df_stocks = pd.read_csv("data/defense_companies.csv")
     df_stocks = df_stocks[df_stocks["ticker"].str.lower() != "not public"]
+    stock_name_to_ticker = {row["name"]: row["ticker"] for _, row in df_stocks.iterrows()}
 
-    name_to_ticker = {row["name"]: row["ticker"] for _, row in df_stocks.iterrows()}
+    index_tickers = {
+        "S&P 500": "^GSPC", "Nasdaq 100": "^NDX", "Dow Jones": "^DJI",
+        "Russell 2000": "^RUT", "FTSE 100": "^FTSE", "Euro Stoxx 50": "^STOXX50E",
+        "DAX": "^GDAXI", "CAC 40": "^FCHI", "Nikkei 225": "^N225", "Hang Seng": "^HSI"
+    }
 
-    selected = st.multiselect("Select Companies/Indexes", list(name_to_ticker.keys()), default=["Lockheed Martin"])
-    horizon = st.selectbox("Time Range", [
-        "1d", "5d", "1mo", "3mo", "6mo",
-        "ytd", "1y", "2y", "5y", "10y", "max"
-    ])
+    col1, col2 = st.columns(2)
+    with col1:
+        selected_stocks = st.multiselect("Select Defense Companies", list(stock_name_to_ticker.keys()))
+    with col2:
+        selected_indexes = st.multiselect("Select Indexes", list(index_tickers.keys()))
 
-    if horizon == "1d":
-        st.info("📅 Intraday data may be unavailable outside of market hours.")
+    col3, col4 = st.columns(2)
+    with col3:
+        horizon = st.selectbox("Time Range", [
+            "1d", "5d", "1mo", "3mo", "6mo",
+            "ytd", "1y", "2y", "5y", "10y", "max"
+        ])
+    with col4:
+        normalize = st.checkbox("📊 Normalize Prices (Start at 100%)", value=False)
 
-    if selected:
+    if selected_stocks or selected_indexes:
         fig = px.line(title="Price Comparison")
-        invalid = []
+        skipped = []
 
-        for name in selected:
-            ticker = name_to_ticker[name]
+        for name in selected_stocks:
+            ticker = stock_name_to_ticker[name]
             try:
                 data = yf.Ticker(ticker).history(period=horizon)
                 if not data.empty:
-                    fig.add_scatter(x=data.index, y=data["Close"], mode="lines", name=name)
+                    series = data["Close"]
+                    if normalize:
+                        series = (series / series.iloc[0]) * 100
+                    fig.add_scatter(x=series.index, y=series, mode="lines", name=name)
                 else:
-                    invalid.append(name)
-            except Exception as e:
-                invalid.append(name)
+                    skipped.append(name)
+            except:
+                skipped.append(name)
 
-        if invalid:
-            st.warning(f"⚠️ Skipped invalid or empty tickers: {', '.join(invalid)}")
+        for name in selected_indexes:
+            ticker = index_tickers[name]
+            try:
+                data = yf.Ticker(ticker).history(period=horizon)
+                if not data.empty:
+                    series = data["Close"]
+                    if normalize:
+                        series = (series / series.iloc[0]) * 100
+                    fig.add_scatter(x=series.index, y=series, mode="lines", name=name)
+                else:
+                    skipped.append(name)
+            except:
+                skipped.append(name)
+
+        if skipped:
+            st.warning(f"⚠️ Skipped: {', '.join(skipped)}")
 
         st.plotly_chart(fig, use_container_width=True)
+
+        # Show fundamental info for the first selected stock
+        if selected_stocks:
+            ticker = stock_name_to_ticker[selected_stocks[0]]
+            info = yf.Ticker(ticker).info
+            st.markdown(f"### 🧾 Fundamentals for **{selected_stocks[0]}**")
+            st.markdown(f"""
+            - 💰 **Market Cap**: {info.get("marketCap", "N/A"):,}
+            - 📈 **52 Week Change**: {info.get("52WeekChange", 0) * 100:.2f}%
+            - 📉 **Beta**: {info.get("beta", "N/A")}
+            - 🧮 **PE Ratio**: {info.get("trailingPE", "N/A")}
+            - 💸 **Dividend Yield**: {info.get("dividendYield", 0) * 100:.2f}%
+            """)
     else:
-        st.info("Select at least one stock or index to display.")
+        st.info("Select at least one company or index to compare.")
 except Exception as e:
-    st.error(f"📉 Could not load stock data: {e}")
+    st.error(f"📉 Could not load data: {e}")
