@@ -154,50 +154,38 @@ try:
             st.warning(f"⚠️ Skipped: {', '.join(skipped)}")
 
         st.plotly_chart(fig, use_container_width=True, key="main_price_chart")
-                    for name in selected_indexes:
-        ticker = index_tickers[name]
+                # ========== Stinger Defense Index ==========
+        st.markdown("## 🛡️ Stinger Defense Index")
 
-        if ticker == "STINGER_INDEX":
-            st.markdown("### 🛡️ Stinger Defense Index (Custom)")
+        with st.spinner("Calculating Stinger Defense Index..."):
+            index_series_list = []
 
-            with st.spinner("Calculating Stinger Defense Index..."):
-                index_series_list = []
+            for name in stock_name_to_ticker.keys():
+                ticker = stock_name_to_ticker[name]
+                try:
+                    data = yf.Ticker(ticker).history(period=horizon)
+                    if not data.empty:
+                        norm_series = (data["Close"] / data["Close"].iloc[0]) * 100
+                        norm_series.name = name
+                        index_series_list.append(norm_series)
+                    else:
+                        st.warning(f"⚠️ No data for {name} ({ticker})")
+                except Exception as e:
+                    st.warning(f"⚠️ Error for {name} ({ticker}): {e}")
 
-                for stock_name, stock_ticker in stock_name_to_ticker.items():
-                    try:
-                        data = yf.Ticker(stock_ticker).history(period=horizon)
-                        if not data.empty:
-                            norm_series = (data["Close"] / data["Close"].iloc[0]) * 100
-                            norm_series.name = stock_name
-                            index_series_list.append(norm_series)
-                    except:
-                        continue
+            st.caption(f"📊 Using {len(index_series_list)} companies to compute the index.")
 
-                if index_series_list:
-                    combined_index = pd.concat(index_series_list, axis=1).mean(axis=1)
-                    if normalize:
-                        combined_index = (combined_index / combined_index.iloc[0]) * 100
-
-                    fig.add_scatter(
-                        x=combined_index.index,
-                        y=combined_index.values,
-                        mode="lines",
-                        name="🛡️ Stinger Defense Index"
-                    )
-                else:
-                    st.warning("⚠️ Not enough data to compute the Stinger Defense Index.")
-        else:
-            try:
-                data = yf.Ticker(ticker).history(period=horizon)
-                if not data.empty:
-                    series = data["Close"]
-                    if normalize:
-                        series = (series / series.iloc[0]) * 100
-                    fig.add_scatter(x=series.index, y=series, mode="lines", name=name)
-                else:
-                    skipped.append(name)
-            except:
-                skipped.append(name)
+            if index_series_list:
+                combined_index = pd.concat(index_series_list, axis=1).mean(axis=1)
+                fig_index = px.line(
+                    x=combined_index.index,
+                    y=combined_index.values,
+                    labels={'x': 'Date', 'y': 'Index Value'},
+                    title="🛡️ Stinger Defense Index Performance"
+                )
+                st.plotly_chart(fig_index, use_container_width=True, key="defense_index_plot")
+            else:
+                st.warning("⚠️ Not enough data to compute the custom defense index.")
         # ========== Dynamic Fundamentals Based on Horizon (Multiple Stocks) ==========
         if selected_stocks:
             st.markdown(f"## 🧾 Fundamentals for Selected Stocks ({horizon})")
