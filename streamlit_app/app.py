@@ -155,26 +155,24 @@ try:
 
         st.plotly_chart(fig, use_container_width=True)
 
-        # ========== Dynamic Fundamentals Based on Horizon (Multiple Stocks) ==========
-       if selected_stocks:
-           st.markdown(f"## 🧾 Fundamentals for Selected Stocks ({horizon})")
-           for selected_name in selected_stocks:
-           ticker = stock_name_to_ticker[selected_name]
-           ticker_obj = yf.Ticker(ticker)
-           hist = ticker_obj.history(period=horizon)
+        # ========== Dynamic Fundamentals Based on Horizon ==========
+        if selected_stocks:
+            selected_name = selected_stocks[0]
+            ticker = stock_name_to_ticker[selected_name]
+            ticker_obj = yf.Ticker(ticker)
+            hist = ticker_obj.history(period=horizon)
 
-           if not hist.empty:
-               price_change = ((hist["Close"].iloc[-1] - hist["Close"].iloc[0]) / hist["Close"].iloc[0]) * 100
-               latest_volume = hist["Volume"].iloc[-1] if "Volume" in hist.columns else "N/A"
-               info = ticker_obj.info
+            if not hist.empty:
+                price_change = ((hist["Close"].iloc[-1] - hist["Close"].iloc[0]) / hist["Close"].iloc[0]) * 100
+                latest_volume = hist["Volume"].iloc[-1] if "Volume" in hist.columns else "N/A"
+                info = ticker_obj.info
 
-               st.markdown(f"### 📊 {selected_name}")
-               col1, col2, col3, col4 = st.columns(4)
-               col1.metric("Price Change", f"{price_change:.2f}%", delta=f"{hist['Close'].iloc[-1] - hist['Close'].iloc[0]:.2f}")
-               col2.metric("Volume", f"{latest_volume:,}" if latest_volume != "N/A" else "N/A")
-               col3.metric("Market Cap", f"${info.get('marketCap', 'N/A'):,}" if isinstance(info.get('marketCap'), int) else "N/A")
-               col4.metric("Beta", f"{info.get('beta', 'N/A')}")
-               st.markdown("---")
+                st.markdown(f"### 🧾 Fundamentals for **{selected_name}** ({horizon})")
+                col1, col2, col3, col4 = st.columns(4)
+                col1.metric("Price Change", f"{price_change:.2f}%", delta=f"{hist['Close'].iloc[-1] - hist['Close'].iloc[0]:.2f}")
+                col2.metric("Volume", f"{latest_volume:,}" if latest_volume != "N/A" else "N/A")
+                col3.metric("Market Cap", f"${info.get('marketCap', 'N/A'):,}" if isinstance(info.get('marketCap'), int) else "N/A")
+                col4.metric("Beta", f"{info.get('beta', 'N/A')}")
     else:
         st.info("Select at least one company or index to compare.")
 except Exception as e:
