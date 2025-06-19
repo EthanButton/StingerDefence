@@ -135,8 +135,7 @@ try:
                     skipped.append(name)
             except:
                 skipped.append(name)
-
-        for name in selected_indexes:
+for name in selected_indexes:
     ticker = index_tickers[name]
 
     if ticker == "STINGER_INDEX":
