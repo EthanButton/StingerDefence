@@ -166,7 +166,8 @@ try:
             - 📉 **Beta**: {info.get("beta", "N/A")}
             - 🧮 **PE Ratio**: {info.get("trailingPE", "N/A")}
             - 💸 **Dividend Yield**: {info.get("dividendYield", 0) * 100:.2f}%
-            """)    else:
+            """)
+    else:
         st.info("Select at least one company or index to compare.")
 except Exception as e:
     st.error(f"📉 Could not load data: {e}")
