@@ -154,13 +154,8 @@ try:
             st.warning(f"⚠️ Skipped: {', '.join(skipped)}")
 
         st.plotly_chart(fig, use_container_width=True, key="main_price_chart")
-                # ========== Stinger Defense Index ==========
-        st.markdown("## 🛡️ Stinger Defense Index")
-
-        with st.spinner("Calculating Stinger Defense Index..."):
-            index_series_list = []
-
-                    for name in selected_indexes:
+                        # ========== Stinger Defense Index ==========
+        for name in selected_indexes:
             ticker = index_tickers[name]
 
             if ticker == "STINGER_INDEX":
@@ -176,8 +171,8 @@ try:
                                 norm_series = (data["Close"] / data["Close"].iloc[0]) * 100
                                 norm_series.name = stock_name
                                 index_series_list.append(norm_series)
-                        except:
-                            continue
+                        except Exception as e:
+                            st.warning(f"⚠️ Error fetching {stock_name}: {e}")
 
                     if index_series_list:
                         combined_index = pd.concat(index_series_list, axis=1).mean(axis=1)
