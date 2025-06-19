@@ -90,41 +90,35 @@ except:
     st.warning("Company data not available.")
 
 # ========== STOCK TRACKER ==========
-st.subheader("📈 Stock Tracker")
+st.subheader("📈 Stock & Index Tracker")
 
 try:
     df_stocks = pd.read_csv("data/defense_companies.csv")
     df_stocks = df_stocks[df_stocks["ticker"].str.lower() != "not public"]
 
     name_to_ticker = {}
-    invalid_tickers = []
-
     for _, row in df_stocks.iterrows():
-        ticker = row["ticker"]
-        try:
-            test = yf.Ticker(ticker).history(period="1d")
-            if not test.empty:
-                name_to_ticker[row["name"]] = ticker
-            else:
-                invalid_tickers.append(row["name"])
-        except:
-            invalid_tickers.append(row["name"])
+        name_to_ticker[row["name"]] = row["ticker"]
 
-    if invalid_tickers:
-        st.warning(f"⚠️ Skipped invalid/empty tickers: {', '.join(invalid_tickers)}")
+    selected = st.multiselect("Select Companies/Indexes", list(name_to_ticker.keys()), default=["Lockheed Martin"])
 
-    col1, col2 = st.columns(2)
-    with col1:
-        selected = st.selectbox("Select Company", list(name_to_ticker.keys()))
-    with col2:
-        horizon = st.selectbox("Select Time Range", ["7d", "1mo", "3mo", "6mo", "ytd", "1y"])
+    horizon = st.selectbox("Time Range", ["7d", "1mo", "3mo", "6mo", "ytd", "1y"])
 
-    ticker_data = yf.Ticker(name_to_ticker[selected])
-    hist = ticker_data.history(period=horizon)
+    if selected:
+        fig = px.line(title="Price Comparison")
 
-    st.metric(label=f"{selected} (Last Close)", value=f"${hist['Close'].iloc[-1]:.2f}")
-    fig = px.line(hist, x=hist.index, y="Close", title=f"{selected} Stock Price")
-    st.plotly_chart(fig, use_container_width=True)
+        for name in selected:
+            ticker = name_to_ticker[name]
+            try:
+                data = yf.Ticker(ticker).history(period=horizon)
+                if not data.empty:
+                    fig.add_scatter(x=data.index, y=data["Close"], mode="lines", name=name)
+            except Exception as e:
+                st.warning(f"⚠️ Could not fetch data for {name}: {e}")
+
+        st.plotly_chart(fig, use_container_width=True)
+    else:
+        st.info("Select at least one stock or index to display.")
 
 except Exception as e:
     st.error(f"📉 Could not load stock data: {e}")
