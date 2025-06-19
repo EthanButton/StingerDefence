@@ -156,17 +156,33 @@ try:
         st.plotly_chart(fig, use_container_width=True)
 
         # Show fundamental info for the first selected stock
-        if selected_stocks:
-            ticker = stock_name_to_ticker[selected_stocks[0]]
-            info = yf.Ticker(ticker).info
-            st.markdown(f"### 🧾 Fundamentals for **{selected_stocks[0]}**")
-            st.markdown(f"""
-            - 💰 **Market Cap**: {info.get("marketCap", "N/A"):,}
-            - 📈 **52 Week Change**: {info.get("52WeekChange", 0) * 100:.2f}%
-            - 📉 **Beta**: {info.get("beta", "N/A")}
-            - 🧮 **PE Ratio**: {info.get("trailingPE", "N/A")}
-            - 💸 **Dividend Yield**: {info.get("dividendYield", 0) * 100:.2f}%
-            """)
+        # Show dynamic fundamentals for the first selected stock
+if selected_stocks:
+    ticker = stock_name_to_ticker[selected_stocks[0]]
+    t = yf.Ticker(ticker)
+    info = t.info
+
+    # Try to fetch historical data for price change calculation
+    try:
+        hist = t.history(period=horizon)
+        if not hist.empty:
+            start_price = hist["Close"].iloc[0]
+            end_price = hist["Close"].iloc[-1]
+            percent_change = ((end_price - start_price) / start_price) * 100
+        else:
+            percent_change = None
+    except:
+        percent_change = None
+
+    st.markdown(f"### 🧾 Fundamentals for **{selected_stocks[0]}**")
+    st.markdown(f"""
+    - 💰 **Market Cap**: {info.get("marketCap", "N/A"):,}
+    - ⏱️ **Period**: {horizon}
+    - 📊 **Price Change**: {percent_change:.2f}% over selected range
+    - 📉 **Beta**: {info.get("beta", "N/A")}
+    - 🧮 **PE Ratio**: {info.get("trailingPE", "N/A")}
+    - 💸 **Dividend Yield**: {info.get("dividendYield", 0) * 100:.2f}%
+    """)
     else:
         st.info("Select at least one company or index to compare.")
 except Exception as e:
