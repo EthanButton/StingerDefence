@@ -155,18 +155,24 @@ try:
 
         st.plotly_chart(fig, use_container_width=True)
 
-        # Show fundamental info for the first selected stock
+        # ========== Dynamic Fundamentals Based on Horizon ==========
         if selected_stocks:
-            ticker = stock_name_to_ticker[selected_stocks[0]]
-            info = yf.Ticker(ticker).info
-            st.markdown(f"### 🧾 Fundamentals for **{selected_stocks[0]}**")
-            st.markdown(f"""
-            - 💰 **Market Cap**: {info.get("marketCap", "N/A"):,}
-            - 📈 **52 Week Change**: {info.get("52WeekChange", 0) * 100:.2f}%
-            - 📉 **Beta**: {info.get("beta", "N/A")}
-            - 🧮 **PE Ratio**: {info.get("trailingPE", "N/A")}
-            - 💸 **Dividend Yield**: {info.get("dividendYield", 0) * 100:.2f}%
-            """)
+            selected_name = selected_stocks[0]
+            ticker = stock_name_to_ticker[selected_name]
+            ticker_obj = yf.Ticker(ticker)
+            hist = ticker_obj.history(period=horizon)
+
+            if not hist.empty:
+                price_change = ((hist["Close"].iloc[-1] - hist["Close"].iloc[0]) / hist["Close"].iloc[0]) * 100
+                latest_volume = hist["Volume"].iloc[-1] if "Volume" in hist.columns else "N/A"
+                info = ticker_obj.info
+
+                st.markdown(f"### 🧾 Fundamentals for **{selected_name}** ({horizon})")
+                col1, col2, col3, col4 = st.columns(4)
+                col1.metric("Price Change", f"{price_change:.2f}%", delta=f"{hist['Close'].iloc[-1] - hist['Close'].iloc[0]:.2f}")
+                col2.metric("Volume", f"{latest_volume:,}" if latest_volume != "N/A" else "N/A")
+                col3.metric("Market Cap", f"${info.get('marketCap', 'N/A'):,}" if isinstance(info.get('marketCap'), int) else "N/A")
+                col4.metric("Beta", f"{info.get('beta', 'N/A')}")
     else:
         st.info("Select at least one company or index to compare.")
 except Exception as e:
