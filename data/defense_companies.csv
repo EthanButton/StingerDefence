@@ -22,3 +22,11 @@ Kongsberg Gruppen,KOG.OL,Norway
 Airbus,EADSY,Netherlands
 Dassault Aviation,AM.PA,France
 Hensoldt AG,HAG.DE,Germany
+
+name,ticker,country
+S&P 500,^GSPC,Index
+Euro Stoxx 50,^STOXX50E,Index
+FTSE 100,^FTSE,Index
+NASDAQ 100,^NDX,Index
+DAX,^GDAXI,Index
+CAC 40,^FCHI,Index
