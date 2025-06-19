@@ -157,16 +157,38 @@ try:
 
         # Show fundamental info for the first selected stock
         if selected_stocks:
-            ticker = stock_name_to_ticker[selected_stocks[0]]
-            info = yf.Ticker(ticker).info
-            st.markdown(f"### 🧾 Fundamentals for **{selected_stocks[0]}**")
-            st.markdown(f"""
-            - 💰 **Market Cap**: {info.get("marketCap", "N/A"):,}
-            - 📈 **52 Week Change**: {info.get("52WeekChange", 0) * 100:.2f}%
-            - 📉 **Beta**: {info.get("beta", "N/A")}
-            - 🧮 **PE Ratio**: {info.get("trailingPE", "N/A")}
-            - 💸 **Dividend Yield**: {info.get("dividendYield", 0) * 100:.2f}%
-            """)
+    ticker = stock_name_to_ticker[selected_stocks[0]]
+    t = yf.Ticker(ticker)
+
+    # Handle fundamentals
+    info = t.info
+    market_cap = info.get("marketCap", "N/A")
+    beta = info.get("beta", "N/A")
+    pe_ratio = info.get("trailingPE", "N/A")
+    dividend_yield = info.get("dividendYield", 0)
+
+    # Handle dynamic price change
+    try:
+        hist = t.history(period=horizon)
+        if len(hist) >= 2:
+            start_price = hist["Close"].iloc[0]
+            end_price = hist["Close"].iloc[-1]
+            percent_change = ((end_price - start_price) / start_price) * 100
+            percent_change_str = f"{percent_change:.2f}%"
+        else:
+            percent_change_str = "Not enough data"
+    except:
+        percent_change_str = "Error loading data"
+
+    st.markdown(f"### 🧾 Fundamentals for **{selected_stocks[0]}**")
+    st.markdown(f"""
+    - 💰 **Market Cap**: {market_cap if isinstance(market_cap, str) else f"${market_cap:,.0f}"}
+    - ⏱️ **Period**: {horizon}
+    - 📊 **Price Change**: {percent_change_str}
+    - 📉 **Beta**: {beta}
+    - 🧮 **PE Ratio**: {pe_ratio}
+    - 💸 **Dividend Yield**: {dividend_yield * 100:.2f}%
+    """)
     else:
         st.info("Select at least one company or index to compare.")
 except Exception as e:
