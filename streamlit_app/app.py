@@ -153,9 +153,7 @@ try:
         if skipped:
             st.warning(f"⚠️ Skipped: {', '.join(skipped)}")
 
-        st.plotly_chart(fig, use_container_width=True)
-
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True, key="main_price_chart")
 
         # ========== Dynamic Fundamentals Based on Horizon (Multiple Stocks) ==========
         if selected_stocks:
