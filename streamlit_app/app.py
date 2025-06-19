@@ -90,71 +90,84 @@ except:
     st.warning("Company data not available.")
 
 # ========== STOCK TRACKER ==========
-st.subheader("📈 Stock Tracker")
+st.subheader("📈 Stock & Index Tracker")
+
 try:
     df_stocks = pd.read_csv("data/defense_companies.csv")
     df_stocks = df_stocks[df_stocks["ticker"].str.lower() != "not public"]
+    stock_name_to_ticker = {row["name"]: row["ticker"] for _, row in df_stocks.iterrows()}
 
-    stock_name_to_ticker = {}
-    invalid_tickers = []
-
-    for _, row in df_stocks.iterrows():
-        ticker = row["ticker"]
-        try:
-            test = yf.Ticker(ticker).history(period="1d")
-            if not test.empty:
-                stock_name_to_ticker[row["name"]] = ticker
-            else:
-                invalid_tickers.append(row["name"])
-        except:
-            invalid_tickers.append(row["name"])
-
-    if invalid_tickers:
-        st.warning(f"⚠️ Skipped invalid or empty tickers: {', '.join(invalid_tickers)}")
+    index_tickers = {
+        "S&P 500": "^GSPC", "Nasdaq 100": "^NDX", "Dow Jones": "^DJI",
+        "Russell 2000": "^RUT", "FTSE 100": "^FTSE", "Euro Stoxx 50": "^STOXX50E",
+        "DAX": "^GDAXI", "CAC 40": "^FCHI", "Nikkei 225": "^N225", "Hang Seng": "^HSI"
+    }
 
     col1, col2 = st.columns(2)
     with col1:
-        selected_stocks = st.multiselect("Select Stock(s)", list(stock_name_to_ticker.keys()))
+        selected_stocks = st.multiselect("Select Defense Companies", list(stock_name_to_ticker.keys()))
     with col2:
-        horizon = st.selectbox("Time Range", ["5d", "7d", "1mo", "3mo", "6mo", "ytd", "1y", "2y", "5y", "10y", "max"])
+        selected_indexes = st.multiselect("Select Indexes", list(index_tickers.keys()))
 
-    if selected_stocks:
+    col3, col4 = st.columns(2)
+    with col3:
+        horizon = st.selectbox("Time Range", [
+            "1d", "5d", "1mo", "3mo", "6mo",
+            "ytd", "1y", "2y", "5y", "10y", "max"
+        ])
+    with col4:
+        normalize = st.checkbox("📊 Normalize Prices (Start at 100%)", value=False)
+
+    if selected_stocks or selected_indexes:
+        fig = px.line(title="Price Comparison")
+        skipped = []
+
         for name in selected_stocks:
             ticker = stock_name_to_ticker[name]
-            t = yf.Ticker(ticker)
-
-            # Fundamentals
-            info = t.info
-            market_cap = info.get("marketCap", "N/A")
-            beta = info.get("beta", "N/A")
-            pe_ratio = info.get("trailingPE", "N/A")
-            dividend_yield = info.get("dividendYield", 0)
-
-            # Price change
             try:
-                hist = t.history(period=horizon)
-                if len(hist) >= 2:
-                    start_price = hist["Close"].iloc[0]
-                    end_price = hist["Close"].iloc[-1]
-                    percent_change = ((end_price - start_price) / start_price) * 100
-                    percent_change_str = f"{percent_change:.2f}%"
+                data = yf.Ticker(ticker).history(period=horizon)
+                if not data.empty:
+                    series = data["Close"]
+                    if normalize:
+                        series = (series / series.iloc[0]) * 100
+                    fig.add_scatter(x=series.index, y=series, mode="lines", name=name)
                 else:
-                    percent_change_str = "Not enough data"
+                    skipped.append(name)
             except:
-                percent_change_str = "Error loading data"
+                skipped.append(name)
 
-            st.markdown(f"### 🧾 Fundamentals for **{name}**")
+        for name in selected_indexes:
+            ticker = index_tickers[name]
+            try:
+                data = yf.Ticker(ticker).history(period=horizon)
+                if not data.empty:
+                    series = data["Close"]
+                    if normalize:
+                        series = (series / series.iloc[0]) * 100
+                    fig.add_scatter(x=series.index, y=series, mode="lines", name=name)
+                else:
+                    skipped.append(name)
+            except:
+                skipped.append(name)
+
+        if skipped:
+            st.warning(f"⚠️ Skipped: {', '.join(skipped)}")
+
+        st.plotly_chart(fig, use_container_width=True)
+
+        # Show fundamental info for the first selected stock
+        if selected_stocks:
+            ticker = stock_name_to_ticker[selected_stocks[0]]
+            info = yf.Ticker(ticker).info
+            st.markdown(f"### 🧾 Fundamentals for **{selected_stocks[0]}**")
             st.markdown(f"""
-            - 💰 **Market Cap**: {market_cap if isinstance(market_cap, str) else f"${market_cap:,.0f}"}
-            - ⏱️ **Period**: {horizon}
-            - 📊 **Price Change**: {percent_change_str}
-            - 📉 **Beta**: {beta}
-            - 🧮 **PE Ratio**: {pe_ratio}
-            - 💸 **Dividend Yield**: {dividend_yield * 100:.2f}%
+            - 💰 **Market Cap**: {info.get("marketCap", "N/A"):,}
+            - 📈 **52 Week Change**: {info.get("52WeekChange", 0) * 100:.2f}%
+            - 📉 **Beta**: {info.get("beta", "N/A")}
+            - 🧮 **PE Ratio**: {info.get("trailingPE", "N/A")}
+            - 💸 **Dividend Yield**: {info.get("dividendYield", 0) * 100:.2f}%
             """)
-
-            # Line chart
-            fig = px.line(hist, x=hist.index, y="Close", title=f"{name} Stock Price")
-            st.plotly_chart(fig, use_container_width=True)
+    else:
+        st.info("Select at least one company or index to compare.")
 except Exception as e:
-    st.error(f"📉 Could not load stock data: {e}")
+    st.error(f"📉 Could not load data: {e}")
