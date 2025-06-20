@@ -142,23 +142,25 @@ try:
 
             if ticker == "STINGER_INDEX":
                 try:
-                    st.markdown("### 🛡️ Stinger Defense Index (Custom)")
-                    st.caption("📊 Calculated from all defense company tickers in your database.")
-
                     index_series_list = []
                     for stock_name, stock_ticker in stock_name_to_ticker.items():
                         try:
-                            data = yf.Ticker(stock_ticker).history(period=horizon)
+                            data = yf.Ticker(stock_ticker).history(period=horizon)["Close"]
                             if not data.empty:
-                                norm_series = (data["Close"] / data["Close"].iloc[0]) * 100
+                                norm_series = (data / data.iloc[0]) * 100
+                                norm_series.name = stock_name
                                 index_series_list.append(norm_series)
                         except:
                             continue
 
                     if index_series_list:
-                        combined_index = pd.concat(index_series_list, axis=1).mean(axis=1)
+                        combined_df = pd.concat(index_series_list, axis=1)
+                        combined_df = combined_df.fillna(method="ffill").dropna()
+                        combined_index = combined_df.mean(axis=1)
+
                         if normalize:
                             combined_index = (combined_index / combined_index.iloc[0]) * 100
+
                         fig.add_scatter(
                             x=combined_index.index,
                             y=combined_index.values,
