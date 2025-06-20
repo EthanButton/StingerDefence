@@ -1,0 +1,17 @@
+# Prevent leaking sensitive API keys
+.streamlit/secrets.toml
+
+# Ignore system files and Python cache
+__pycache__/
+*.py[cod]
+.DS_Store
+Thumbs.db
+
+# Ignore environments (optional)
+.env
+.venv/
+venv/
+env/
+
+# Ignore data files (optional if large or sensitive)
+data/*.csv
