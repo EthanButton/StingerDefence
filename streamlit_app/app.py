@@ -13,9 +13,11 @@ st.caption("Global Defense Market Dashboard — Stocks, News & Companies")
 st.markdown("---")
 
 # ========== NEWS SECTION ==========
+import streamlit as st
+import pandas as pd
 import re
 
-st.subheader("🔤 Latest Defense News")
+st.subheader("📰 Latest Defense News")
 
 @st.cache_data(ttl=1800)
 def load_news():
@@ -38,12 +40,12 @@ else:
     show_all = st.toggle("Show All News", value=False)
     news_to_show = filtered if show_all else filtered.head(5)
 
-    st.caption(f"🔤 Showing {'all' if show_all else 'latest 5'} news items for **{selected_company}**")
+    st.caption(f"📰 Showing {'all' if show_all else 'latest 5'} news items for **{selected_company}**")
 
     for _, row in news_to_show.iterrows():
         with st.container():
             st.markdown(f"### [{row['title']}]({row['link']})")
-            st.caption(f"🔕️ {row['published']} — 🏢 {row['company']}")
+            st.caption(f"📅 {row['published']} — 🏢 {row['company']}")
 
             summary_parts = []
             if re.search(r"\$\d+[.\d]*\s*(million|billion)?", row["title"], re.IGNORECASE):
@@ -91,7 +93,6 @@ try:
     df_stocks = pd.read_csv("data/defense_companies.csv")
     df_stocks = df_stocks[df_stocks["ticker"].str.lower() != "not public"]
     stock_name_to_ticker = {row["name"]: row["ticker"] for _, row in df_stocks.iterrows()}
-    stock_name_to_marketcap = {row["name"]: row.get("market_cap", None) for _, row in df_stocks.iterrows() if pd.notna(row.get("market_cap", None))}
 
     index_tickers = {
         "S&P 500": "^GSPC", "Nasdaq 100": "^NDX", "Dow Jones": "^DJI",
@@ -139,29 +140,27 @@ try:
             if ticker == "STINGER_INDEX":
                 try:
                     index_series_list = []
-                    weights = []
-
                     for stock_name, stock_ticker in stock_name_to_ticker.items():
                         try:
                             data = yf.Ticker(stock_ticker).history(period=horizon)["Close"]
-                            if not data.empty and stock_name in stock_name_to_marketcap:
+                            if not data.empty:
                                 norm_series = (data / data.iloc[0]) * 100
-                                index_series_list.append(norm_series * stock_name_to_marketcap[stock_name])
-                                weights.append(stock_name_to_marketcap[stock_name])
+                                norm_series.name = stock_name
+                                index_series_list.append(norm_series)
                         except:
                             continue
 
-                    if index_series_list and weights:
+                    if index_series_list:
                         combined_df = pd.concat(index_series_list, axis=1)
                         combined_df = combined_df.fillna(method="ffill").dropna()
-                        weighted_index = combined_df.sum(axis=1) / sum(weights)
+                        combined_index = combined_df.mean(axis=1)
 
                         if normalize:
-                            weighted_index = (weighted_index / weighted_index.iloc[0]) * 100
+                            combined_index = (combined_index / combined_index.iloc[0]) * 100
 
                         fig.add_scatter(
-                            x=weighted_index.index,
-                            y=weighted_index.values,
+                            x=combined_index.index,
+                            y=combined_index.values,
                             mode="lines",
                             name="🛡️ Stinger Defense Index"
                         )
@@ -189,7 +188,7 @@ try:
 
         # ========== Dynamic Fundamentals Based on Horizon (Multiple Stocks) ==========
         if selected_stocks:
-            st.markdown(f"## 🗾 Fundamentals for Selected Stocks ({horizon})")
+            st.markdown(f"## 🧾 Fundamentals for Selected Stocks ({horizon})")
 
             for selected_name in selected_stocks:
                 ticker = stock_name_to_ticker[selected_name]
@@ -201,7 +200,7 @@ try:
                     latest_volume = hist["Volume"].iloc[-1] if "Volume" in hist.columns else "N/A"
                     info = ticker_obj.info
 
-                    st.markdown(f"### 📈 {selected_name}")
+                    st.markdown(f"### 📊 {selected_name}")
                     col1, col2, col3, col4 = st.columns(4)
                     col1.metric("Price Change", f"{price_change:.2f}%", delta=f"{hist['Close'].iloc[-1] - hist['Close'].iloc[0]:.2f}")
                     col2.metric("Volume", f"{latest_volume:,}" if latest_volume != "N/A" else "N/A")
