@@ -43,7 +43,7 @@ else:
     for _, row in news_to_show.iterrows():
         with st.container():
             st.markdown(f"### [{row['title']}]({row['link']})")
-            st.caption(f"🗕️ {row['published']} — 🏢 {row['company']}")
+            st.caption(f"🔕️ {row['published']} — 🏢 {row['company']}")
 
             summary_parts = []
             if re.search(r"\$\d+[.\d]*\s*(million|billion)?", row["title"], re.IGNORECASE):
@@ -201,7 +201,7 @@ try:
                     latest_volume = hist["Volume"].iloc[-1] if "Volume" in hist.columns else "N/A"
                     info = ticker_obj.info
 
-                    st.markdown(f"### 📊 {selected_name}")
+                    st.markdown(f"### 📈 {selected_name}")
                     col1, col2, col3, col4 = st.columns(4)
                     col1.metric("Price Change", f"{price_change:.2f}%", delta=f"{hist['Close'].iloc[-1] - hist['Close'].iloc[0]:.2f}")
                     col2.metric("Volume", f"{latest_volume:,}" if latest_volume != "N/A" else "N/A")
