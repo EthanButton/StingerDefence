@@ -100,8 +100,9 @@ try:
     index_tickers = {
         "S&P 500": "^GSPC", "Nasdaq 100": "^NDX", "Dow Jones": "^DJI",
         "Russell 2000": "^RUT", "FTSE 100": "^FTSE", "Euro Stoxx 50": "^STOXX50E",
-        "DAX": "^GDAXI", "CAC 40": "^FCHI", "Nikkei 225": "^N225", "Hang Seng": "^HSI", 
-        "🛡️ Stinger Defense Index": "STINGER_INDEX"    }
+        "DAX": "^GDAXI", "CAC 40": "^FCHI", "Nikkei 225": "^N225", "Hang Seng": "^HSI",
+        "🛡️ Stinger Defense Index": "STINGER_INDEX"
+    }
 
     col1, col2 = st.columns(2)
     with col1:
@@ -138,17 +139,48 @@ try:
 
         for name in selected_indexes:
             ticker = index_tickers[name]
-            try:
-                data = yf.Ticker(ticker).history(period=horizon)
-                if not data.empty:
-                    series = data["Close"]
-                    if normalize:
-                        series = (series / series.iloc[0]) * 100
-                    fig.add_scatter(x=series.index, y=series, mode="lines", name=name)
-                else:
+
+            if ticker == "STINGER_INDEX":
+                try:
+                    st.markdown("### 🛡️ Stinger Defense Index (Custom)")
+                    st.caption("📊 Calculated from all defense company tickers in your database.")
+
+                    index_series_list = []
+                    for stock_name, stock_ticker in stock_name_to_ticker.items():
+                        try:
+                            data = yf.Ticker(stock_ticker).history(period=horizon)
+                            if not data.empty:
+                                norm_series = (data["Close"] / data["Close"].iloc[0]) * 100
+                                index_series_list.append(norm_series)
+                        except:
+                            continue
+
+                    if index_series_list:
+                        combined_index = pd.concat(index_series_list, axis=1).mean(axis=1)
+                        if normalize:
+                            combined_index = (combined_index / combined_index.iloc[0]) * 100
+                        fig.add_scatter(
+                            x=combined_index.index,
+                            y=combined_index.values,
+                            mode="lines",
+                            name="🛡️ Stinger Defense Index"
+                        )
+                    else:
+                        skipped.append("🛡️ Stinger Defense Index")
+                except:
+                    skipped.append("🛡️ Stinger Defense Index")
+            else:
+                try:
+                    data = yf.Ticker(ticker).history(period=horizon)
+                    if not data.empty:
+                        series = data["Close"]
+                        if normalize:
+                            series = (series / series.iloc[0]) * 100
+                        fig.add_scatter(x=series.index, y=series, mode="lines", name=name)
+                    else:
+                        skipped.append(name)
+                except:
                     skipped.append(name)
-            except:
-                skipped.append(name)
 
         if skipped:
             st.warning(f"⚠️ Skipped: {', '.join(skipped)}")
