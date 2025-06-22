@@ -11,7 +11,14 @@ st.set_page_config(page_title="Stinger Defence", layout="wide")
 st.title("🛡️ Stinger Defence")
 st.caption("Global Defense Market Dashboard — Stocks, News & Companies")
 st.markdown("---")
+# ========== ABOUT SECTION ==========
+st.subheader("ℹ️ About Stinger Defence")
+st.markdown("""
+**Stinger Defence** is a data-driven aggregator focused on tracking the performance and developments of defence companies across the United States and Europe. Stinger Defence offers a unified platform to explore trends, company profiles, and industry activity within the global defence sector by sourcing from a range of reputable market data providers, public records, and news outlets.
 
+This tool is intended for informational and educational purposes only.  
+**It does not constitute financial advice or investment guidance.**
+""")
 # ========== NEWS SECTION ==========
 import streamlit as st
 import pandas as pd
