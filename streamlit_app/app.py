@@ -2,15 +2,17 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import yfinance as yf
-
+import re
 import sys
 import os
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 st.set_page_config(page_title="Stinger Defence", layout="wide")
 st.title("🛡️ Stinger Defence")
 st.caption("Global Defense Market Dashboard — Stocks, News & Companies")
 st.markdown("---")
+
 # ========== ABOUT SECTION ==========
 st.subheader("ℹ️ About Stinger Defence")
 st.markdown("""
@@ -19,11 +21,9 @@ st.markdown("""
 This tool is intended for informational and educational purposes only.  
 **It does not constitute financial advice or investment guidance.**
 """)
-# ========== NEWS SECTION ==========
-import streamlit as st
-import pandas as pd
-import re
+st.markdown("---")
 
+# ========== NEWS SECTION ==========
 st.subheader("📰 Latest Defense News")
 
 @st.cache_data(ttl=1800)
@@ -192,8 +192,11 @@ try:
             st.warning(f"⚠️ Skipped: {', '.join(skipped)}")
 
         st.plotly_chart(fig, use_container_width=True, key="main_price_chart")
+
         if "🛡️ Stinger Defense Index" in selected_indexes:
-            st.caption("ℹ️ The 🛡️ Stinger Defense Index is an informational, equal-weighted index of select global defense companies.")        # ========== Dynamic Fundamentals Based on Horizon (Multiple Stocks) ==========
+            st.caption("ℹ️ The 🛡️ Stinger Defense Index is an informational, equal-weighted index of select global defense companies.")
+
+        # ========== Dynamic Fundamentals Based on Horizon (Multiple Stocks) ==========
         if selected_stocks:
             st.markdown(f"## 🧾 Fundamentals for Selected Stocks ({horizon})")
 
