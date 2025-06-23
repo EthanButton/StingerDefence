@@ -11,29 +11,95 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 st.set_page_config(page_title="Stinger Defence", layout="wide")
 
-st.title("Stinger Defence")
+# Custom CSS for enhanced professional styling with yellow highlights
+st.markdown("""
+<style>
+    .main-header {
+        font-size: 36px;
+        font-weight: 700;
+        padding: 0.5rem 0;
+        border-bottom: 3px solid #ffc107;
+        margin-bottom: 1.5rem;
+        color: #1a1a1a;
+    }
+    .section-title {
+        font-size: 26px;
+        font-weight: 600;
+        margin-top: 2.5rem;
+        margin-bottom: 0.75rem;
+        color: #333;
+        border-left: 6px solid #ffc107;
+        padding-left: 10px;
+    }
+    .overview-list {
+        background-color: #fffbea;
+        border: 1px solid #ffe58f;
+        border-radius: 8px;
+        padding: 1.2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    .overview-list ul {
+        list-style: none;
+        padding-left: 0;
+        margin: 0;
+    }
+    .overview-list li {
+        padding: 0.25rem 0;
+        font-size: 16px;
+    }
+    .overview-list li::before {
+        content: "\2022";
+        color: #ffc107;
+        font-weight: bold;
+        display: inline-block;
+        width: 1em;
+        margin-left: -1em;
+    }
+    .about-box {
+        background-color: #fdfdfd;
+        border-left: 5px solid #ffc107;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        border-radius: 6px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+</style>
+""", unsafe_allow_html=True)
+
+# Header with title and subcaption
+st.markdown('<div class="main-header">Stinger Defence</div>', unsafe_allow_html=True)
 st.caption("Global Defense Market Dashboard — Stocks, News & Companies")
-# ========== What's Inside ==========
-st.markdown("""
-### What's Inside
-- **About Stinger Defence**
-- **Latest Defense News** — Headlines from the global defense industry
-- **Market & Companies Overview** — Sortable, color-coded daily stock data with movement indicators
-- **Global Defense Companies** — Filterable directory of major defense firms
-- **Stock & Index Tracker** — Compare historical price trends  
-  ↳ *Fundamentals for Selected Stocks*
-""")
 
-# ========== ABOUT SECTION ==========
-st.markdown('<div id="about"></div>', unsafe_allow_html=True)
-st.subheader("About Stinger Defence")
+# What's Inside Section (Updated Overview)
+st.markdown('<div class="section-title">What\'s Inside</div>', unsafe_allow_html=True)
 st.markdown("""
-**Stinger Defence** is a data-driven aggregator focused on tracking the performance and developments of defence companies across the United States and Europe. Stinger Defence offers a unified platform to explore trends, company profiles, and industry activity within the global defence sector by sourcing from a range of reputable market data providers, public records, and news outlets.
+<div class="overview-list">
+<ul>
+<li><strong>About Stinger Defence</strong> — Mission and purpose</li>
+<li><strong>Latest Defense News</strong> — Headlines from the global defense industry</li>
+<li><strong>Market & Companies Overview</strong> — Sortable, color-coded daily stock data with movement indicators</li>
+<li><strong>Global Defense Companies</strong> — Interactive directory by country and name</li>
+<li><strong>Stock & Index Tracker</strong> — Compare historical price trends</li>
+<li><strong>Fundamentals for Selected Stocks</strong> — Volume, market cap, beta, and more</li>
+</ul>
+</div>
+""", unsafe_allow_html=True)
 
-This tool is intended for informational and educational purposes only.  
-**It does not constitute financial advice or investment guidance.**
-""")
 st.markdown("---")
+
+# About Section (Enhanced)
+st.markdown('<div class="section-title">About Stinger Defence</div>', unsafe_allow_html=True)
+st.markdown("""
+<div class="about-box">
+<p><strong>Stinger Defence</strong> is a data-driven aggregator focused on tracking the performance and developments of defence companies across the United States and Europe.</p>
+<p>Our platform provides a unified hub to explore stock performance, corporate directories, news headlines, and financial fundamentals sourced from reputable global market data providers.</p>
+<p><em>This tool is for informational and educational purposes only.<br>It does not constitute financial advice or investment guidance.</em></p>
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown("---")
+
 
 # ========== NEWS SECTION ==========
 st.markdown('<div id="news"></div>', unsafe_allow_html=True)
