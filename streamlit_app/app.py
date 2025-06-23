@@ -13,16 +13,6 @@ st.set_page_config(page_title="Stinger Defence", layout="wide")
 st.title("Stinger Defence")
 st.caption("Global Defense Market Dashboard — Stocks, News & Companies")
 st.markdown("---")
-# ==== LOGO + TITLE SECTION ====
-logo_path = "data/logo.png"  # Make sure this file is in your 'data/' folder
-col_logo, col_title = st.columns([1, 5])
-with col_logo:
-    st.image(logo_path, width=100)
-with col_title:
-    st.title("Stinger Defence")
-    st.caption("Global Defense Market Dashboard — Stocks, News & Companies")
-
-st.markdown("---")
 
 # ========== ABOUT SECTION ==========
 st.subheader("About Stinger Defence")
