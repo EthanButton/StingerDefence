@@ -58,9 +58,17 @@ try:
 except:
     stock_items = []
 
-# Fetch and sort
+# Fetch and filter
 trend_period = "1d"  # Default to daily
 stock_data = [get_price_data(label, ticker, trend_period) for label, ticker in stock_items]
+
+# Only keep your defined companies
+your_companies = {
+    "LMT", "RTX", "NOC", "GD", "LHX", "HII", "TXT", "LDOS", "MRCY", "KTOS",
+    "CW", "CACI", "BA", "OSK", "BAESY", "HO.PA", "RNMBF", "SAAB-B.ST", "FINMY",
+    "KOG.OL", "EADSY", "AM.PA", "HAG.DE"
+}
+stock_data = [item for item in stock_data if item["ticker"] in your_companies]
 
 # Sort for winners and losers
 gainers = sorted(stock_data, key=lambda x: x["change"] if isinstance(x["change"], (int, float)) else -999, reverse=True)
@@ -100,10 +108,6 @@ with col1:
 
 with col2:
     render_metrics_block(losers[:10], "Top Losers (Daily Change)")
-
-# ========== NOTE ==========
-# All emojis and trend period dropdown removed for a cleaner, more accurate experience.
-
 
 # (You can continue your NEWS, COMPANIES, and STOCK TRACKER sections from here)
 
