@@ -14,16 +14,14 @@ st.set_page_config(page_title="Stinger Defence", layout="wide")
 st.title("Stinger Defence")
 st.caption("Global Defense Market Dashboard — Stocks, News & Companies")
 
-# ========== SITE OVERVIEW ==========
+# What's Inside
 st.markdown("""
-### What's Inside Stinger Defence
-- **About Stinger Defence** — Mission and purpose
-- **Live Market Snapshot** — Daily gainers & losers in defense stocks
-- **Latest Defense News** — Headlines from major defense contractors
-- **Global Defense Companies** — Interactive company list and stats
-- **Stock & Index Tracker** — Compare performance over time
+### What's Inside
+- **About Stinger Defence**
+- **Market & Companies Overview** — Live market snapshot and list of major defense companies
+- **Latest Defense News** — Headlines from the global defense industry
+- **Stock & Index Tracker** — Compare historical price trends
 """)
-
 st.markdown("---")
 
 # ========== ABOUT SECTION ==========
@@ -37,95 +35,63 @@ This tool is intended for informational and educational purposes only.
 """)
 st.markdown("---")
 
-# ========== LIVE MARKET SNAPSHOT ==========
+# ========== MARKET & COMPANIES OVERVIEW ==========
 st.markdown('<div id="market"></div>', unsafe_allow_html=True)
-st.subheader("Live Market Snapshot")
+st.subheader("Market & Companies Overview")
 st.caption("Note: Changes reflect daily movement only.")
 
-def get_price_data(label, ticker, period):
+sort_option = st.selectbox("Sort companies by:", ["Change (Descending)", "Change (Ascending)", "Price (Descending)", "Price (Ascending)"])
+
+try:
+    df_companies = pd.read_csv("data/defense_companies.csv")
+    df_companies = df_companies[df_companies["ticker"].str.lower() != "not public"]
+except:
+    df_companies = pd.DataFrame()
+
+@st.cache_data(ttl=1800)
+def get_price_data(label, ticker):
     try:
         stock = yf.Ticker(ticker)
         price = stock.info.get("regularMarketPrice", "N/A")
         change = stock.info.get("regularMarketChangePercent", 0.0)
-        hist = stock.history(period=period)["Close"]
         return {
-            "label": label,
-            "ticker": ticker,
-            "price": price,
-            "change": change,
-            "sparkline": hist if not hist.empty else None
+            "Company": label,
+            "Ticker": ticker,
+            "Price": price,
+            "Change": change
         }
     except:
         return {
-            "label": label,
-            "ticker": ticker,
-            "price": "N/A",
-            "change": "N/A",
-            "sparkline": None
+            "Company": label,
+            "Ticker": ticker,
+            "Price": "N/A",
+            "Change": "N/A"
         }
 
-# Defense stocks
-try:
-    df_live = pd.read_csv("data/defense_companies.csv")
-    df_live = df_live[df_live["ticker"].str.lower() != "not public"]
-    stock_items = list(zip(df_live["name"], df_live["ticker"]))
-except:
-    stock_items = []
+if not df_companies.empty:
+    stock_data = [get_price_data(row["name"], row["ticker"]) for _, row in df_companies.iterrows()]
+    df_display = pd.DataFrame(stock_data)
 
-# Fetch and filter
-trend_period = "1d"  # Default to daily
-stock_data = [get_price_data(label, ticker, trend_period) for label, ticker in stock_items]
+    # Sorting logic
+    if sort_option == "Change (Descending)":
+        df_display = df_display.sort_values(by="Change", ascending=False)
+    elif sort_option == "Change (Ascending)":
+        df_display = df_display.sort_values(by="Change", ascending=True)
+    elif sort_option == "Price (Descending)":
+        df_display = df_display.sort_values(by="Price", ascending=False)
+    elif sort_option == "Price (Ascending)":
+        df_display = df_display.sort_values(by="Price", ascending=True)
 
-# Only keep your defined companies
-your_companies = {
-    "LMT", "RTX", "NOC", "GD", "LHX", "HII", "TXT", "LDOS", "MRCY", "KTOS",
-    "CW", "CACI", "BA", "OSK", "BAESY", "HO.PA", "RNMBF", "SAAB-B.ST", "FINMY",
-    "KOG.OL", "EADSY", "AM.PA", "HAG.DE"
-}
-stock_data = [item for item in stock_data if item["ticker"] in your_companies]
+    st.dataframe(df_display, use_container_width=True, height=500)
+    fig = px.histogram(df_display, x="Company", y="Price", title="Defense Companies by Current Price")
+    st.plotly_chart(fig, use_container_width=True)
+else:
+    st.warning("Company data not available.")
 
-# Sort for winners and losers
-gainers = sorted(stock_data, key=lambda x: x["change"] if isinstance(x["change"], (int, float)) else -999, reverse=True)
-losers = sorted(stock_data, key=lambda x: x["change"] if isinstance(x["change"], (int, float)) else 999)
-
-def render_metrics_block(data, title):
-    st.markdown(f"#### {title}")
-    table_data = []
-    for item in data:
-        label = item['label']
-        ticker = item['ticker']
-        price = item['price']
-        change = item['change']
-
-        price_str = f"${price:,.2f}" if isinstance(price, float) else "N/A"
-        delta_str = f"{change:.2f}%" if isinstance(change, float) else "N/A"
-
-        color = "green" if isinstance(change, float) and change >= 0 else "red"
-        label_colored = f"<span style='color:{color}'>{label}</span>"
-
-        table_data.append({
-            "Company": label_colored,
-            "Ticker": ticker,
-            "Price": price_str,
-            "Change": delta_str
-        })
-
-    df_table = pd.DataFrame(table_data)
-    st.write("", unsafe_allow_html=True)
-    st.write(df_table.to_html(escape=False, index=False), unsafe_allow_html=True)
-
-# Show gainers and losers side-by-side
-col1, col2 = st.columns(2)
-
-with col1:
-    render_metrics_block(gainers[:10], "Top Gainers (Daily Change)")
-
-with col2:
-    render_metrics_block(losers[:10], "Top Losers (Daily Change)")
-
-# (You can continue your NEWS, COMPANIES, and STOCK TRACKER sections from here)
+st.markdown("---")
 
 # ========== NEWS SECTION ==========
+st.markdown('<div id="news"></div>', unsafe_allow_html=True)
 st.subheader("Latest Defense News")
 
 @st.cache_data(ttl=1800)
