@@ -13,16 +13,16 @@ st.set_page_config(page_title="Stinger Defence", layout="wide")
 
 st.title("Stinger Defence")
 st.caption("Global Defense Market Dashboard — Stocks, News & Companies")
-
 # What's Inside
 st.markdown("""
 ### What's Inside
 - **About Stinger Defence**
 - **Latest Defense News** — Headlines from the global defense industry
 - **Market & Companies Overview** — Sortable, color-coded daily stock data with movement indicators
-- **Stock & Index Tracker** — Compare historical price trends
+- **Global Defense Companies** — Filterable directory of major defense firms
+- **Stock & Index Tracker** — Compare historical price trends  
+  ↳ *Fundamentals for Selected Stocks*
 """)
-st.markdown("---")
 
 # ========== ABOUT SECTION ==========
 st.markdown('<div id="about"></div>', unsafe_allow_html=True)
