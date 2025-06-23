@@ -102,6 +102,7 @@ def render_metrics_block(data, title):
 
 render_metrics_block(stock_data[:9], "📊 Top Gaining Defense Stocks (5d trend)")
 render_metrics_block(index_data, "🌐 Major Market Indexes (5d trend)")
+
 # ========== NEWS SECTION ==========
 st.subheader("📰 Latest Defense News")
 
