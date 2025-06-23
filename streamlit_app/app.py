@@ -11,32 +11,19 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 st.set_page_config(page_title="Stinger Defence", layout="wide")
 
-# Anchor navigation dropdown
-st.markdown("### Navigation")
-section = st.selectbox("", [
-    "Select a section...",
-    "About",
-    "Live Market Snapshot",
-    "Latest Defense News",
-    "Global Defense Companies",
-    "Stock & Index Tracker"
-], index=0, label_visibility="collapsed")
-
-section_to_id = {
-    "About": "about",
-    "Live Market Snapshot": "market",
-    "Latest Defense News": "news",
-    "Global Defense Companies": "companies",
-    "Stock & Index Tracker": "tracker"
-}
-
-if section != "Select a section...":
-    target_id = section_to_id[section]
-    st.markdown(f"""<a href="#{target_id}">Jump to {section}</a>""", unsafe_allow_html=True)
-    st.markdown(f"""<script>document.querySelector('a[href=\"#{target_id}\"]').click()</script>""", unsafe_allow_html=True)
-
 st.title("Stinger Defence")
 st.caption("Global Defense Market Dashboard — Stocks, News & Companies")
+
+# ========== SITE OVERVIEW ==========
+st.markdown("""
+### 📌 What's Inside Stinger Defence
+- **About Stinger Defence** — Mission and purpose
+- **Live Market Snapshot** — Daily gainers & losers in defense stocks
+- **Latest Defense News** — Headlines from major defense contractors
+- **Global Defense Companies** — Interactive company list and stats
+- **Stock & Index Tracker** — Compare performance over time
+""")
+
 st.markdown("---")
 
 # ========== ABOUT SECTION ==========
