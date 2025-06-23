@@ -96,8 +96,15 @@ def render_metrics_block(data, title):
     st.write("", unsafe_allow_html=True)
     st.write(df_table.to_html(escape=False, index=False), unsafe_allow_html=True)
 
-render_metrics_block(gainers[:10], f"📈 Top Gainers ({trend_period} Trend)")
-render_metrics_block(losers[:10], f"📉 Top Losers ({trend_period} Trend)")
+# Show gainers and losers side-by-side
+col1, col2 = st.columns(2)
+
+with col1:
+    render_metrics_block(gainers[:10], f"📈 Top Gainers ({trend_period} Trend)")
+
+with col2:
+    render_metrics_block(losers[:10], f"📉 Top Losers ({trend_period} Trend)")
+
 
 
 # (You can continue your NEWS, COMPANIES, and STOCK TRACKER sections from here)
