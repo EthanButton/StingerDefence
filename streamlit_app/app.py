@@ -27,12 +27,12 @@ st.markdown("---")
 # ========== LIVE MARKET SNAPSHOT ==========
 st.subheader("💵 Live Market Snapshot")
 
-def get_price_data(label, ticker, period):
+def get_price_data(label, ticker):
     try:
         stock = yf.Ticker(ticker)
         price = stock.info.get("regularMarketPrice", "N/A")
         change = stock.info.get("regularMarketChangePercent", 0.0)
-        hist = stock.history(period=period)["Close"]
+        hist = stock.history(period="5d")["Close"]
         return {
             "label": label,
             "ticker": ticker,
@@ -48,13 +48,6 @@ def get_price_data(label, ticker, period):
             "change": "N/A",
             "sparkline": None
         }
-
-# Time range selector with styling
-with st.container():
-    st.markdown("#### 🕒 Select Trend Time Range")
-    trend_period = st.selectbox("", [
-        "1d", "5d", "1mo", "3mo", "6mo", "ytd", "1y", "2y", "5y", "10y", "max"
-    ], index=1, label_visibility="collapsed")
 
 # Defense stocks
 try:
@@ -72,50 +65,45 @@ index_items = [
 ]
 
 # Fetch and sort
-stock_data = [get_price_data(label, ticker, trend_period) for label, ticker in stock_items]
-index_data = [get_price_data(label, ticker, trend_period) for label, ticker in index_items]
+stock_data = [get_price_data(label, ticker) for label, ticker in stock_items]
+index_data = [get_price_data(label, ticker) for label, ticker in index_items]
 
 stock_data = sorted(stock_data, key=lambda x: x["change"] if isinstance(x["change"], (int, float)) else -999, reverse=True)
 index_data = sorted(index_data, key=lambda x: x["change"] if isinstance(x["change"], (int, float)) else -999, reverse=True)
 
 def render_metrics_block(data, title):
-    st.markdown(f"<h4 style='margin-top: 2rem;'>{title}</h4>", unsafe_allow_html=True)
-    for i in range(0, len(data), 3):
-        cols = st.columns(3)
-        for j in range(3):
-            if i + j < len(data):
-                item = data[i + j]
-                price = item["price"]
-                change = item["change"]
-                delta_str = f"{change:.2f}%" if isinstance(change, float) else "N/A"
-                price_str = f"${price:,.2f}" if isinstance(price, float) else "N/A"
+    st.markdown(f"### {title}")
+    cols = st.columns(3)
+    for i, item in enumerate(data):
+        price = item["price"]
+        change = item["change"]
+        delta_str = f"{change:.2f}%" if isinstance(change, float) else "N/A"
+        price_str = f"${price:.2f}" if isinstance(price, float) else "N/A"
 
-                color = "green" if isinstance(change, float) and change >= 0 else "red"
-                with cols[j]:
-                    st.metric(label=item["label"], value=price_str, delta=delta_str)
+        color = "green" if isinstance(change, float) and change >= 0 else "red"
+        with cols[i % 3]:
+            st.metric(label=item["label"], value=price_str, delta=delta_str)
 
-                    if item["sparkline"] is not None:
-                        spark_df = pd.DataFrame(item["sparkline"]).reset_index()
-                        spark_df.columns = ["Date", "Close"]
-                        fig = px.line(
-                            spark_df,
-                            x="Date",
-                            y="Close",
-                            height=120,
-                            template="plotly_white"
-                        )
-                        fig.update_layout(
-                            xaxis=dict(showgrid=False, showticklabels=False),
-                            yaxis=dict(showgrid=False, showticklabels=False),
-                            margin=dict(l=0, r=0, t=0, b=0),
-                            showlegend=False,
-                        )
-                        fig.update_traces(line_color=color, line_width=2)
-                        st.plotly_chart(fig, use_container_width=True, key=f"{item['ticker']}_{trend_period}_spark")
+            if item["sparkline"] is not None:
+                spark_df = pd.DataFrame(item["sparkline"]).reset_index()
+                spark_df.columns = ["Date", "Close"]
+                fig = px.line(
+                    spark_df,
+                    x="Date",
+                    y="Close",
+                    height=100
+                )
+                fig.update_layout(
+                    xaxis=dict(showgrid=False, showticklabels=False),
+                    yaxis=dict(showgrid=False, showticklabels=False),
+                    margin=dict(l=0, r=0, t=0, b=0),
+                    showlegend=False,
+                )
+                fig.update_traces(line_color=color)
+                st.plotly_chart(fig, use_container_width=True, key=f"{item['ticker']}_{i}_spark")
 
-render_metrics_block(stock_data[:9], f"📊 Top Gaining Defense Stocks ({trend_period} Trend)")
-render_metrics_block(index_data, f"🌐 Major Market Indexes ({trend_period} Trend)")
-
+render_metrics_block(stock_data[:9], "📊 Top Gaining Defense Stocks (5d trend)")
+render_metrics_block(index_data, "🌐 Major Market Indexes (5d trend)")
 
 # (You can continue your NEWS, COMPANIES, and STOCK TRACKER sections from here)
 
