@@ -10,6 +10,30 @@ from streamlit.components.v1 import html
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 st.set_page_config(page_title="Stinger Defence", layout="wide")
+# Anchor navigation dropdown
+st.markdown("### Navigation")
+section = st.selectbox("", [
+    "Select a section...",
+    "About",
+    "Live Market Snapshot",
+    "Latest Defense News",
+    "Global Defense Companies",
+    "Stock & Index Tracker"
+], index=0, label_visibility="collapsed")
+
+if section != "Select a section...":
+    js_code = f"""
+    <script>
+        const section = `{section}`.toLowerCase().replace(/ /g, '-');
+        const headers = Array.from(document.querySelectorAll('h2, h3'));
+        const target = headers.find(h => h.innerText.toLowerCase().includes(section));
+        if (target) {{
+            target.scrollIntoView({{ behavior: 'smooth' }});
+        }}
+    </script>
+    """
+    st.markdown(js_code, unsafe_allow_html=True)
+
 st.title("Stinger Defence")
 st.caption("Global Defense Market Dashboard — Stocks, News & Companies")
 st.markdown("---")
