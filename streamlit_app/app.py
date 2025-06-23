@@ -10,8 +10,7 @@ from streamlit.components.v1 import html
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 st.set_page_config(page_title="Stinger Defence", layout="wide")
-st.title("Stinger Defence")
-st.caption("Global Defense Market Dashboard — Stocks, News & Companies")
+
 # Anchor navigation dropdown
 st.markdown("### Navigation")
 section = st.selectbox("", [
@@ -23,21 +22,25 @@ section = st.selectbox("", [
     "Stock & Index Tracker"
 ], index=0, label_visibility="collapsed")
 
+section_to_id = {
+    "About": "about",
+    "Live Market Snapshot": "market",
+    "Latest Defense News": "news",
+    "Global Defense Companies": "companies",
+    "Stock & Index Tracker": "tracker"
+}
+
 if section != "Select a section...":
-    js_code = f"""
-    <script>
-        const section = `{section}`.toLowerCase().replace(/ /g, '-');
-        const headers = Array.from(document.querySelectorAll('h2, h3'));
-        const target = headers.find(h => h.innerText.toLowerCase().includes(section));
-        if (target) {{
-            target.scrollIntoView({{ behavior: 'smooth' }});
-        }}
-    </script>
-    """
-    st.markdown(js_code, unsafe_allow_html=True)
+    target_id = section_to_id[section]
+    st.markdown(f"""<a href="#{target_id}">Jump to {section}</a>""", unsafe_allow_html=True)
+    st.markdown(f"""<script>document.querySelector('a[href=\"#{target_id}\"]').click()</script>""", unsafe_allow_html=True)
+
+st.title("Stinger Defence")
+st.caption("Global Defense Market Dashboard — Stocks, News & Companies")
 st.markdown("---")
 
 # ========== ABOUT SECTION ==========
+st.markdown('<div id="about"></div>', unsafe_allow_html=True)
 st.subheader("About Stinger Defence")
 st.markdown("""
 **Stinger Defence** is a data-driven aggregator focused on tracking the performance and developments of defence companies across the United States and Europe. Stinger Defence offers a unified platform to explore trends, company profiles, and industry activity within the global defence sector by sourcing from a range of reputable market data providers, public records, and news outlets.
@@ -48,6 +51,7 @@ This tool is intended for informational and educational purposes only.
 st.markdown("---")
 
 # ========== LIVE MARKET SNAPSHOT ==========
+st.markdown('<div id="market"></div>', unsafe_allow_html=True)
 st.subheader("Live Market Snapshot")
 st.caption("Note: Changes reflect daily movement only.")
 
