@@ -16,7 +16,7 @@ st.caption("Global Defense Market Dashboard — Stocks, News & Companies")
 
 # ========== SITE OVERVIEW ==========
 st.markdown("""
-### 📌 What's Inside Stinger Defence
+### What's Inside Stinger Defence
 - **About Stinger Defence** — Mission and purpose
 - **Live Market Snapshot** — Daily gainers & losers in defense stocks
 - **Latest Defense News** — Headlines from major defense contractors
