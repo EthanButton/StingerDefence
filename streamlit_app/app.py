@@ -26,6 +26,7 @@ st.markdown("---")
 
 # ========== LIVE MARKET SNAPSHOT ==========
 st.subheader("Live Market Snapshot")
+st.caption("Note: Changes reflect daily movement only.")
 
 def get_price_data(label, ticker, period):
     try:
@@ -49,12 +50,6 @@ def get_price_data(label, ticker, period):
             "sparkline": None
         }
 
-# Time range selector with styling
-st.markdown("#### Select Trend Time Range")
-trend_period = st.selectbox("", [
-    "1d", "5d", "1mo", "3mo", "6mo", "ytd", "1y", "2y", "5y", "10y", "max"
-], index=1, label_visibility="collapsed")
-
 # Defense stocks
 try:
     df_live = pd.read_csv("data/defense_companies.csv")
@@ -64,6 +59,7 @@ except:
     stock_items = []
 
 # Fetch and sort
+trend_period = "1d"  # Default to daily
 stock_data = [get_price_data(label, ticker, trend_period) for label, ticker in stock_items]
 
 # Sort for winners and losers
@@ -100,11 +96,13 @@ def render_metrics_block(data, title):
 col1, col2 = st.columns(2)
 
 with col1:
-    render_metrics_block(gainers[:10], f"Top Gainers ({trend_period} Trend)")
+    render_metrics_block(gainers[:10], "Top Gainers (Daily Change)")
 
 with col2:
-    render_metrics_block(losers[:10], f"Top Losers ({trend_period} Trend)")
+    render_metrics_block(losers[:10], "Top Losers (Daily Change)")
 
+# ========== NOTE ==========
+# All emojis and trend period dropdown removed for a cleaner, more accurate experience.
 
 
 # (You can continue your NEWS, COMPANIES, and STOCK TRACKER sections from here)
