@@ -10,12 +10,12 @@ from streamlit.components.v1 import html
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 st.set_page_config(page_title="Stinger Defence", layout="wide")
-st.title("🛡️ Stinger Defence")
+st.title("Stinger Defence")
 st.caption("Global Defense Market Dashboard — Stocks, News & Companies")
 st.markdown("---")
 
 # ========== ABOUT SECTION ==========
-st.subheader("ℹ️ About Stinger Defence")
+st.subheader("About Stinger Defence")
 st.markdown("""
 **Stinger Defence** is a data-driven aggregator focused on tracking the performance and developments of defence companies across the United States and Europe. Stinger Defence offers a unified platform to explore trends, company profiles, and industry activity within the global defence sector by sourcing from a range of reputable market data providers, public records, and news outlets.
 
@@ -25,7 +25,7 @@ This tool is intended for informational and educational purposes only.
 st.markdown("---")
 
 # ========== LIVE MARKET SNAPSHOT ==========
-st.subheader("💵 Live Market Snapshot")
+st.subheader("Live Market Snapshot")
 
 def get_price_data(label, ticker, period):
     try:
@@ -50,7 +50,7 @@ def get_price_data(label, ticker, period):
         }
 
 # Time range selector with styling
-st.markdown("#### 🕒 Select Trend Time Range")
+st.markdown("#### Select Trend Time Range")
 trend_period = st.selectbox("", [
     "1d", "5d", "1mo", "3mo", "6mo", "ytd", "1y", "2y", "5y", "10y", "max"
 ], index=1, label_visibility="collapsed")
@@ -100,17 +100,17 @@ def render_metrics_block(data, title):
 col1, col2 = st.columns(2)
 
 with col1:
-    render_metrics_block(gainers[:10], f"📈 Top Gainers ({trend_period} Trend)")
+    render_metrics_block(gainers[:10], f"Top Gainers ({trend_period} Trend)")
 
 with col2:
-    render_metrics_block(losers[:10], f"📉 Top Losers ({trend_period} Trend)")
+    render_metrics_block(losers[:10], f"Top Losers ({trend_period} Trend)")
 
 
 
 # (You can continue your NEWS, COMPANIES, and STOCK TRACKER sections from here)
 
 # ========== NEWS SECTION ==========
-st.subheader("📰 Latest Defense News")
+st.subheader("Latest Defense News")
 
 @st.cache_data(ttl=1800)
 def load_news():
@@ -122,7 +122,7 @@ def load_news():
 news_df = load_news()
 
 if news_df.empty:
-    st.warning("⚠️ No news data found.")
+    st.warning("No news data found.")
 else:
     companies = sorted(news_df["company"].dropna().unique())
     selected_company = st.selectbox("Filter by Company", ["All"] + companies)
@@ -133,25 +133,25 @@ else:
     show_all = st.toggle("Show All News", value=False)
     news_to_show = filtered if show_all else filtered.head(5)
 
-    st.caption(f"📰 Showing {'all' if show_all else 'latest 5'} news items for **{selected_company}**")
+    st.caption(f"Showing {'all' if show_all else 'latest 5'} news items for **{selected_company}**")
 
     for _, row in news_to_show.iterrows():
         with st.container():
             st.markdown(f"### [{row['title']}]({row['link']})")
-            st.caption(f"📅 {row['published']} — 🏢 {row['company']}")
+            st.caption(f"{row['published']} — {row['company']}")
 
             summary_parts = []
             if re.search(r"\$\d+[.\d]*\s*(million|billion)?", row["title"], re.IGNORECASE):
-                summary_parts.append("💰 Possible contract value mentioned.")
+                summary_parts.append("Possible contract value mentioned.")
 
             keywords = ["missile", "radar", "ship", "drone", "contract", "aircraft", "satellite", "cyber"]
             matches = [kw for kw in keywords if re.search(kw, row["title"], re.IGNORECASE)]
 
             if matches:
-                summary_parts.append("🧩 Keywords: " + ", ".join(matches))
+                summary_parts.append("Keywords: " + ", ".join(matches))
 
             if summary_parts:
-                st.markdown("**🔍 Summary Insight:** " + " | ".join(summary_parts))
+                st.markdown("**Summary Insight:** " + " | ".join(summary_parts))
 
             st.markdown("---")
 
@@ -163,9 +163,9 @@ try:
     col1, col2 = st.columns(2)
 
     with col1:
-        filter_country = st.multiselect("🌍 Filter by Country", sorted(df_companies["country"].unique()))
+        filter_country = st.multiselect("Filter by Country", sorted(df_companies["country"].unique()))
     with col2:
-        search_term = st.text_input("🔎 Search Company Name")
+        search_term = st.text_input("Search Company Name")
 
     df_filtered = df_companies.copy()
     if filter_country:
@@ -180,7 +180,7 @@ except:
     st.warning("Company data not available.")
 
 # ========== STOCK TRACKER ==========
-st.subheader("📈 Stock & Index Tracker")
+st.subheader("Stock & Index Tracker")
 
 try:
     df_stocks = pd.read_csv("data/defense_companies.csv")
@@ -191,7 +191,7 @@ try:
         "S&P 500": "^GSPC", "Nasdaq 100": "^NDX", "Dow Jones": "^DJI",
         "Russell 2000": "^RUT", "FTSE 100": "^FTSE", "Euro Stoxx 50": "^STOXX50E",
         "DAX": "^GDAXI", "CAC 40": "^FCHI", "Nikkei 225": "^N225", "Hang Seng": "^HSI",
-        "🛡️ Stinger Defense Index": "STINGER_INDEX"
+        "Stinger Defense Index": "STINGER_INDEX"
     }
 
     col1, col2 = st.columns(2)
@@ -207,7 +207,7 @@ try:
             "ytd", "1y", "2y", "5y", "10y", "max"
         ])
     with col4:
-        normalize = st.checkbox("📊 Normalize Prices (Start at 100%)", value=False)
+        normalize = st.checkbox("Normalize Prices (Start at 100%)", value=False)
 
     if selected_stocks or selected_indexes:
         fig = px.line(title="Price Comparison")
@@ -255,12 +255,12 @@ try:
                             x=combined_index.index,
                             y=combined_index.values,
                             mode="lines",
-                            name="🛡️ Stinger Defense Index"
+                            name="Stinger Defense Index"
                         )
                     else:
-                        skipped.append("🛡️ Stinger Defense Index")
+                        skipped.append("Stinger Defense Index")
                 except:
-                    skipped.append("🛡️ Stinger Defense Index")
+                    skipped.append("Stinger Defense Index")
             else:
                 try:
                     data = yf.Ticker(ticker).history(period=horizon)
@@ -275,16 +275,16 @@ try:
                     skipped.append(name)
 
         if skipped:
-            st.warning(f"⚠️ Skipped: {', '.join(skipped)}")
+            st.warning(f"Skipped: {', '.join(skipped)}")
 
         st.plotly_chart(fig, use_container_width=True, key="main_price_chart")
 
-        if "🛡️ Stinger Defense Index" in selected_indexes:
-            st.caption("ℹ️ The 🛡️ Stinger Defense Index is an informational, equal-weighted index of select global defense companies.")
+        if "Stinger Defense Index" in selected_indexes:
+            st.caption("The Stinger Defense Index is an informational, equal-weighted index of select global defense companies.")
 
         # ========== Dynamic Fundamentals Based on Horizon (Multiple Stocks) ==========
         if selected_stocks:
-            st.markdown(f"## 🧾 Fundamentals for Selected Stocks ({horizon})")
+            st.markdown(f"## Fundamentals for Selected Stocks ({horizon})")
 
             for selected_name in selected_stocks:
                 ticker = stock_name_to_ticker[selected_name]
@@ -296,7 +296,7 @@ try:
                     latest_volume = hist["Volume"].iloc[-1] if "Volume" in hist.columns else "N/A"
                     info = ticker_obj.info
 
-                    st.markdown(f"### 📊 {selected_name}")
+                    st.markdown(f"### {selected_name}")
                     col1, col2, col3, col4 = st.columns(4)
                     col1.metric("Price Change", f"{price_change:.2f}%", delta=f"{hist['Close'].iloc[-1] - hist['Close'].iloc[0]:.2f}")
                     col2.metric("Volume", f"{latest_volume:,}" if latest_volume != "N/A" else "N/A")
@@ -306,4 +306,4 @@ try:
     else:
         st.info("Select at least one company or index to compare.")
 except Exception as e:
-    st.error(f"📉 Could not load data: {e}")
+    st.error(f"Could not load data: {e}")
