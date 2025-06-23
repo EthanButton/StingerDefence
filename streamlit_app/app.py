@@ -10,6 +10,8 @@ from streamlit.components.v1 import html
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 st.set_page_config(page_title="Stinger Defence", layout="wide")
+st.title("Stinger Defence")
+st.caption("Global Defense Market Dashboard — Stocks, News & Companies")
 # Anchor navigation dropdown
 st.markdown("### Navigation")
 section = st.selectbox("", [
@@ -33,9 +35,6 @@ if section != "Select a section...":
     </script>
     """
     st.markdown(js_code, unsafe_allow_html=True)
-
-st.title("Stinger Defence")
-st.caption("Global Defense Market Dashboard — Stocks, News & Companies")
 st.markdown("---")
 
 # ========== ABOUT SECTION ==========
