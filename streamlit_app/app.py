@@ -18,8 +18,8 @@ st.caption("Global Defense Market Dashboard — Stocks, News & Companies")
 st.markdown("""
 ### What's Inside
 - **About Stinger Defence**
-- **Market & Companies Overview** — Live market snapshot and list of major defense companies
 - **Latest Defense News** — Headlines from the global defense industry
+- **Market & Companies Overview** — Live prices, daily movers, and company info
 - **Stock & Index Tracker** — Compare historical price trends
 """)
 st.markdown("---")
@@ -68,7 +68,7 @@ else:
             st.caption(f"{row['published']} — {row['company']}")
 
             summary_parts = []
-            if re.search(r"\$\d+[.\d]*\s*(million|billion)?", row["title"], re.IGNORECASE):
+            if re.search(r"\\$\\d+[.\\d]*\\s*(million|billion)?", row["title"], re.IGNORECASE):
                 summary_parts.append("Possible contract value mentioned.")
 
             keywords = ["missile", "radar", "ship", "drone", "contract", "aircraft", "satellite", "cyber"]
@@ -119,7 +119,6 @@ if not df_companies.empty:
     stock_data = [get_price_data(row["name"], row["ticker"]) for _, row in df_companies.iterrows()]
     df_display = pd.DataFrame(stock_data)
 
-    # Sorting logic
     if sort_option == "Change (Descending)":
         df_display = df_display.sort_values(by="Change", ascending=False)
     elif sort_option == "Change (Ascending)":
@@ -129,11 +128,15 @@ if not df_companies.empty:
     elif sort_option == "Price (Ascending)":
         df_display = df_display.sort_values(by="Price", ascending=True)
 
-    def color_row(row):
-        color = "background-color: #e6ffe6" if isinstance(row["Change"], (int, float)) and row["Change"] > 0 else "background-color: #ffe6e6"
-        return [color]*len(row)
+    def highlight_change(val):
+        if isinstance(val, float):
+            return f'<span style="color:{"green" if val > 0 else "red"}">{val:.2f}%</span>'
+        return val
 
-    st.dataframe(df_display.style.apply(color_row, axis=1), use_container_width=True, height=500)
+    df_display["Change"] = df_display["Change"].apply(highlight_change)
+    df_display["Price"] = df_display["Price"].apply(lambda x: f"${x:,.2f}" if isinstance(x, float) else "N/A")
+
+    st.write(df_display.to_html(escape=False, index=False), unsafe_allow_html=True)
 else:
     st.warning("Company data not available.")
 
