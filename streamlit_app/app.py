@@ -19,7 +19,7 @@ st.markdown("""
 ### What's Inside
 - **About Stinger Defence**
 - **Latest Defense News** — Headlines from the global defense industry
-- **Market & Companies Overview** — Live prices, daily movers, and company info
+- **Market & Companies Overview** — Sortable table of daily price and change
 - **Stock & Index Tracker** — Compare historical price trends
 """)
 st.markdown("---")
@@ -68,7 +68,7 @@ else:
             st.caption(f"{row['published']} — {row['company']}")
 
             summary_parts = []
-            if re.search(r"\\$\\d+[.\\d]*\\s*(million|billion)?", row["title"], re.IGNORECASE):
+            if re.search(r"\$\d+[.\d]*\s*(million|billion)?", row["title"], re.IGNORECASE):
                 summary_parts.append("Possible contract value mentioned.")
 
             keywords = ["missile", "radar", "ship", "drone", "contract", "aircraft", "satellite", "cyber"]
@@ -128,15 +128,16 @@ if not df_companies.empty:
     elif sort_option == "Price (Ascending)":
         df_display = df_display.sort_values(by="Price", ascending=True)
 
-    def highlight_change(val):
+    def color_change(val):
         if isinstance(val, float):
-            return f'<span style="color:{"green" if val > 0 else "red"}">{val:.2f}%</span>'
-        return val
+            return f"color: {'green' if val >= 0 else 'red'}"
+        return ""
 
-    df_display["Change"] = df_display["Change"].apply(highlight_change)
     df_display["Price"] = df_display["Price"].apply(lambda x: f"${x:,.2f}" if isinstance(x, float) else "N/A")
+    df_display["Change %"] = df_display["Change"].apply(lambda x: f"{x:.2f}%" if isinstance(x, float) else "N/A")
+    df_display.drop(columns=["Change"], inplace=True)
 
-    st.write(df_display.to_html(escape=False, index=False), unsafe_allow_html=True)
+    st.dataframe(df_display.style.applymap(color_change, subset=["Change %"]), use_container_width=True)
 else:
     st.warning("Company data not available.")
 
