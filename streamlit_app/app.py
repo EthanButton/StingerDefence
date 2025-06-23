@@ -50,11 +50,10 @@ def get_price_data(label, ticker, period):
         }
 
 # Time range selector with styling
-with st.container():
-    st.markdown("#### 🕒 Select Trend Time Range")
-    trend_period = st.selectbox("", [
-        "1d", "5d", "1mo", "3mo", "6mo", "ytd", "1y", "2y", "5y", "10y", "max"
-    ], index=1, label_visibility="collapsed")
+st.markdown("#### 🕒 Select Trend Time Range")
+trend_period = st.selectbox("", [
+    "1d", "5d", "1mo", "3mo", "6mo", "ytd", "1y", "2y", "5y", "10y", "max"
+], index=1, label_visibility="collapsed")
 
 # Defense stocks
 try:
@@ -72,42 +71,33 @@ gainers = sorted(stock_data, key=lambda x: x["change"] if isinstance(x["change"]
 losers = sorted(stock_data, key=lambda x: x["change"] if isinstance(x["change"], (int, float)) else 999)
 
 def render_metrics_block(data, title):
-    st.markdown(f"<h4 style='margin-top: 2rem;'>{title}</h4>", unsafe_allow_html=True)
-    for i in range(0, len(data), 3):
-        cols = st.columns(3)
-        for j in range(3):
-            if i + j < len(data):
-                item = data[i + j]
-                price = item["price"]
-                change = item["change"]
-                delta_str = f"{change:.2f}%" if isinstance(change, float) else "N/A"
-                price_str = f"${price:,.2f}" if isinstance(price, float) else "N/A"
+    st.markdown(f"#### {title}")
+    table_data = []
+    for item in data:
+        label = item['label']
+        ticker = item['ticker']
+        price = item['price']
+        change = item['change']
 
-                color = "green" if isinstance(change, float) and change >= 0 else "red"
-                with cols[j]:
-                    st.metric(label=item["label"], value=price_str, delta=delta_str)
+        price_str = f"${price:,.2f}" if isinstance(price, float) else "N/A"
+        delta_str = f"{change:.2f}%" if isinstance(change, float) else "N/A"
 
-                    if item["sparkline"] is not None:
-                        spark_df = pd.DataFrame(item["sparkline"]).reset_index()
-                        spark_df.columns = ["Date", "Close"]
-                        fig = px.line(
-                            spark_df,
-                            x="Date",
-                            y="Close",
-                            height=120,
-                            template="plotly_white"
-                        )
-                        fig.update_layout(
-                            xaxis=dict(showgrid=False, showticklabels=False),
-                            yaxis=dict(showgrid=False, showticklabels=False),
-                            margin=dict(l=0, r=0, t=0, b=0),
-                            showlegend=False,
-                        )
-                        fig.update_traces(line_color=color, line_width=2)
-                        st.plotly_chart(fig, use_container_width=True, key=f"{item['ticker']}_{trend_period}_spark")
+        color = "green" if isinstance(change, float) and change >= 0 else "red"
+        label_colored = f"<span style='color:{color}'>{label}</span>"
 
-render_metrics_block(gainers[:6], f"📈 Top Gainers ({trend_period} Trend)")
-render_metrics_block(losers[:6], f"📉 Top Losers ({trend_period} Trend)")
+        table_data.append({
+            "Company": label_colored,
+            "Ticker": ticker,
+            "Price": price_str,
+            "Change": delta_str
+        })
+
+    df_table = pd.DataFrame(table_data)
+    st.write("", unsafe_allow_html=True)
+    st.write(df_table.to_html(escape=False, index=False), unsafe_allow_html=True)
+
+render_metrics_block(gainers[:10], f"📈 Top Gainers ({trend_period} Trend)")
+render_metrics_block(losers[:10], f"📉 Top Losers ({trend_period} Trend)")
 
 
 # (You can continue your NEWS, COMPANIES, and STOCK TRACKER sections from here)
