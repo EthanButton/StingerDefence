@@ -19,7 +19,7 @@ st.markdown("""
 ### What's Inside
 - **About Stinger Defence**
 - **Latest Defense News** — Headlines from the global defense industry
-- **Market & Companies Overview** — Sortable table of daily price and change
+- **Market & Companies Overview** — Sortable, color-coded daily stock data with movement indicators
 - **Stock & Index Tracker** — Compare historical price trends
 """)
 st.markdown("---")
@@ -68,7 +68,7 @@ else:
             st.caption(f"{row['published']} — {row['company']}")
 
             summary_parts = []
-            if re.search(r"\$\d+[.\d]*\s*(million|billion)?", row["title"], re.IGNORECASE):
+            if re.search(r"\\$\\d+[.\\d]*\\s*(million|billion)?", row["title"], re.IGNORECASE):
                 summary_parts.append("Possible contract value mentioned.")
 
             keywords = ["missile", "radar", "ship", "drone", "contract", "aircraft", "satellite", "cyber"]
@@ -128,16 +128,34 @@ if not df_companies.empty:
     elif sort_option == "Price (Ascending)":
         df_display = df_display.sort_values(by="Price", ascending=True)
 
+    def style_row(row):
+        change = row["Change"]
+        if isinstance(change, float):
+            if change > 0:
+                return "🟢"
+            elif change < 0:
+                return "🔻"
+        return ""
+
+    df_display["Indicator"] = df_display.apply(style_row, axis=1)
+
     def color_change(val):
-        if isinstance(val, float):
-            return f"color: {'green' if val >= 0 else 'red'}"
+        if isinstance(val, str) and "%" in val:
+            try:
+                num = float(val.replace("%", ""))
+                if num > 0:
+                    return "color: green"
+                elif num < 0:
+                    return "color: red"
+            except:
+                return ""
         return ""
 
     df_display["Price"] = df_display["Price"].apply(lambda x: f"${x:,.2f}" if isinstance(x, float) else "N/A")
     df_display["Change %"] = df_display["Change"].apply(lambda x: f"{x:.2f}%" if isinstance(x, float) else "N/A")
     df_display.drop(columns=["Change"], inplace=True)
 
-    st.dataframe(df_display.style.applymap(color_change, subset=["Change %"]), use_container_width=True)
+    st.dataframe(df_display[["Indicator", "Company", "Ticker", "Price", "Change %"]].style.applymap(color_change, subset=["Change %"]), use_container_width=True)
 else:
     st.warning("Company data not available.")
 
