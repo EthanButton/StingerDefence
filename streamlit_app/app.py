@@ -116,7 +116,10 @@ def get_price_data(label, ticker):
         }
 
 if not df_companies.empty:
-    stock_data = [get_price_data(row["name"], row["ticker"]) for _, row in df_companies.iterrows()]
+    index_tickers = ["^GSPC", "^NDX", "^DJI", "^RUT", "^FTSE", "^STOXX50E", "^GDAXI", "^FCHI", "^N225", "^HSI", "STINGER_INDEX"]
+df_companies = df_companies[~df_companies["ticker"].isin(index_tickers)]
+stock_data = [get_price_data(row["name"], row["ticker"]) for _, row in df_companies.iterrows()]
+
     df_display = pd.DataFrame(stock_data)
 
     if sort_option == "Change (Descending)":
