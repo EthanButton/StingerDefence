@@ -37,10 +37,7 @@ st.markdown("---")
 # ===== EDITORIAL INSIGHT =====
 st.markdown("### Editorial Insight")
 st.markdown("""
-*Paste your daily or periodic write-up here.*
-
-This section can include market context, geopolitical analysis, or curated highlights from recent defense developments. Update this manually as needed.
-""")
+*Paste your daily or periodic write-up here.*""")
 
 # ========== NEWS SECTION ==========
 st.markdown('<div id="news"></div>', unsafe_allow_html=True)
