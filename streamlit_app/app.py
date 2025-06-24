@@ -33,7 +33,7 @@ st.markdown("""
 This tool is intended for informational and educational purposes only.  
 **It does not constitute financial advice or investment guidance.**
 """)
-st.markdown("---")
+st.markdown("<hr class='yellow-divider'>", unsafe_allow_html=True)
 # ===== EDITORIAL INSIGHT =====
 st.markdown("### Editorial Insight")
 st.markdown("""
