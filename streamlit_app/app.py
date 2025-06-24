@@ -210,6 +210,7 @@ try:
     st.plotly_chart(fig, use_container_width=True)
 except:
     st.warning("Company data not available.")
+st.markdown("<div class='yellow-divider'></div>", unsafe_allow_html=True)
 
 # ========== STOCK TRACKER ==========
 st.subheader("Stock & Index Tracker")
