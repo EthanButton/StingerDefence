@@ -58,7 +58,7 @@ At the NATO summit in The Hague, alliance leaders agreed to increase defense spe
 The Paris Air Show highlighted growing defense priorities. Airbus announced 21 billion dollars in new aircraft orders and revealed the SIRTAP tactical UAV, set for delivery in 2027. The company also introduced upgrades to its MRTT+ tanker, including improved avionics and digital systems for coalition operations.
 In the Middle East, a ceasefire between Iran and Israel is currently holding following U.S. diplomatic pressure, though regional risks remain high.
 On the tech front, defense-data startup Obviant raised 7.1 million dollars to expand its platform for acquisition and budgeting analytics—signaling strong investor interest in defense-focused software.
-Today’s events underscore a shift toward higher defense investment and greater alliance integration amid rising global tension..*""")
+Today’s events underscore a shift toward higher defense investment and greater alliance integration amid rising global tension.""")
 
 # ========== NEWS SECTION ==========
 st.markdown('<div id="news"></div>', unsafe_allow_html=True)
