@@ -34,13 +34,6 @@ This tool is intended for informational and educational purposes only.
 **It does not constitute financial advice or investment guidance.**
 """)
 st.markdown("---")
-# ===== EDITORIAL INSIGHT =====
-st.markdown("### ✍️ Editorial Insight")
-st.markdown("""
-*Paste your daily or periodic write-up here.*
-
-This section can include market context, geopolitical analysis, or curated highlights from recent defense developments. Update this manually as needed.
-""")
 
 # ========== NEWS SECTION ==========
 st.markdown('<div id="news"></div>', unsafe_allow_html=True)
