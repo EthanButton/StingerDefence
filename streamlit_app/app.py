@@ -35,6 +35,7 @@ st.markdown("""
 - **Stock & Index Tracker** — Compare historical price trends  
   ↳ *Fundamentals for Selected Stocks*
 """)
+st.markdown("<div class='yellow-divider'></div>", unsafe_allow_html=True)
 
 # ========== ABOUT SECTION ==========
 st.markdown('<div id="about"></div>', unsafe_allow_html=True)
