@@ -98,7 +98,8 @@ else:
             if summary_parts:
                 st.markdown("**Summary Insight:** " + " | ".join(summary_parts))
 
-            st.markdown("---")
+            st.markdown("<div class='yellow-divider'></div>", unsafe_allow_html=True)
+
 
 # ========== MARKET & COMPANIES OVERVIEW ==========
 st.markdown('<div id="market"></div>', unsafe_allow_html=True)
