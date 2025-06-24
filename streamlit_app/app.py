@@ -13,6 +13,17 @@ st.set_page_config(page_title="Stinger Defence", layout="wide")
 
 st.title("Stinger Defence")
 st.caption("Global Defense Market Dashboard — Stocks, News & Companies")
+# ===== CUSTOM STYLES =====
+st.markdown("""
+<style>
+.yellow-divider {
+    border: none;
+    border-top: 2px solid #FFCC00;
+    margin: 2em 0;
+}
+</style>
+""", unsafe_allow_html=True)
+
 # ========== What's Inside ==========
 st.markdown("""
 ### What's Inside
