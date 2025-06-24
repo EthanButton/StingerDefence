@@ -313,7 +313,6 @@ try:
 
         if "Stinger Defense Index" in selected_indexes:
             st.caption("The Stinger Defense Index is an informational, equal-weighted index of select global defense companies.")
-st.markdown("<div class='yellow-divider'></div>", unsafe_allow_html=True)
 
         # ========== Dynamic Fundamentals Based on Horizon (Multiple Stocks) ==========
         if selected_stocks:
