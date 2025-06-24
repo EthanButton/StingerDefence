@@ -89,7 +89,7 @@ else:
             if re.search(r"\\$\\d+[.\\d]*\\s*(million|billion)?", row["title"], re.IGNORECASE):
                 summary_parts.append("Possible contract value mentioned.")
 
-            keywords = ["missile", "radar", "ship", "drone", "contract", "aircraft", "satellite", "cyber"]
+            keywords = ["missile", "radar", "ship", "drone", "contract", "aircraft", "satellite", "cyber", "$", "Million", "Billion"]
             matches = [kw for kw in keywords if re.search(kw, row["title"], re.IGNORECASE)]
 
             if matches:
