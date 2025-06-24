@@ -17,9 +17,10 @@ st.caption("Global Defense Market Dashboard — Stocks, News & Companies")
 st.markdown("""
 <style>
 .yellow-divider {
-    border: none;
     border-top: 2px solid #FFCC00;
-    margin: 2em 0;
+    margin-top: 2em;
+    margin-bottom: 2em;
+    width: 100%;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -44,7 +45,8 @@ st.markdown("""
 This tool is intended for informational and educational purposes only.  
 **It does not constitute financial advice or investment guidance.**
 """)
-st.markdown("<hr class='yellow-divider'>", unsafe_allow_html=True)
+st.markdown("<div class='yellow-divider'></div>", unsafe_allow_html=True)
+
 # ===== EDITORIAL INSIGHT =====
 st.markdown("### Editorial Insight")
 st.markdown("""
