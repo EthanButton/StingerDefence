@@ -35,7 +35,7 @@ This tool is intended for informational and educational purposes only.
 """)
 st.markdown("---")
 # ===== EDITORIAL INSIGHT =====
-st.markdown("### ✍️ Editorial Insight")
+st.markdown("### Editorial Insight")
 st.markdown("""
 *Paste your daily or periodic write-up here.*
 
