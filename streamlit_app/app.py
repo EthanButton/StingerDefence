@@ -168,11 +168,11 @@ else:
 
 st.markdown("---")
 # ===== MARKET & COMPANIES NOTE =====
-st.markdown("### 🧾 Market & Companies Note")
+st.markdown("### Market & Companies Note")
 st.markdown("*Paste your notes or summary for this section here.*")
 
 # ========== COMPANIES SECTION ==========
-st.subheader("🏢 Global Defense Companies")
+st.subheader("Global Defense Companies")
 
 try:
     df_companies = pd.read_csv("data/defense_companies.csv")
