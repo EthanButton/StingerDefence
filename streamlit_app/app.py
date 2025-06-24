@@ -181,7 +181,6 @@ if not df_companies.empty:
 else:
     st.warning("Company data not available.")
 
-st.markdown("---")
 # ===== MARKET & COMPANIES NOTE =====
 st.markdown("### Market & Companies Note")
 st.markdown("*Paste your notes or summary for this section here.*")
