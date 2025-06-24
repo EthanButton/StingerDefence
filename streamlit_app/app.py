@@ -185,6 +185,8 @@ else:
 st.markdown("### Market & Companies Note")
 st.markdown("*Paste your notes or summary for this section here.*")
 
+st.markdown("<div class='yellow-divider'></div>", unsafe_allow_html=True)
+
 # ========== COMPANIES SECTION ==========
 st.subheader("Global Defense Companies")
 
