@@ -30,13 +30,6 @@ st.markdown("""
     color: green;
     font-weight: bold;
 }
-td.negative {
-    color: red;
-}
-td.positive {
-    color: green;
-    font-weight: bold;
-}
 </style>
 """, unsafe_allow_html=True)
 
