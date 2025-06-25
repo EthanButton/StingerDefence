@@ -229,9 +229,6 @@ try:
 except Exception as e:
     st.warning(f"Live stock data unavailable. Error: {e}")
 
-st.markdown("<div class='yellow-divider'></div>", unsafe_allow_html=True)
-
-
 # ===== MARKET & COMPANIES NOTE =====
 st.markdown("### Market & Companies Note")
 st.markdown("""
