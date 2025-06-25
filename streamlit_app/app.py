@@ -116,7 +116,7 @@ else:
 
 # ========== MARKET & COMPANIES OVERVIEW ==========
 st.markdown('<div id="market"></div>', unsafe_allow_html=True)
-st.subheader("📊 Market & Companies Overview (Live)")
+st.subheader("Market & Companies Overview (Live)")
 st.caption("Includes real-time price, % change, volume, market cap, P/E ratio, 52-week change — refreshes every 10s")
 
 @st.cache_data(ttl=10)
