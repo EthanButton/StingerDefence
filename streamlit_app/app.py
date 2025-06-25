@@ -231,12 +231,11 @@ st.markdown("<div class='yellow-divider'></div>", unsafe_allow_html=True)
 # ===== MARKET & COMPANIES NOTE =====
 st.markdown("### Market & Companies Note")
 st.markdown("""
-Today’s defense sector activity highlighted key contract wins, stable trading, and continued momentum in radar, missile, and aircraft programs among leading U.S. firms.
-Lockheed Martin (LMT) successfully tested its Long Range Discrimination Radar (LRDR) in Alaska, tracking a target over 2,000 km. This supports its role in the 175 billion dollars Golden Dome missile defense project, expected to be operational by 2029. Lockheed also completed the TR-3 upgrade to its F-35 fleet, pending final U.S. approval, with current production at 20 jets per month and a target of up to 190 deliveries in 2025. However, it announced a 10 percent workforce reduction at its Greenville, SC plant after losing an F-16 maintenance contract.
-Raytheon Technologies (RTX) secured several major contracts: a 250 million dollar deal with Mitsubishi Electric to produce the ESSM Block 2 missile in Japan; a 646 million dollar U.S. Navy contract for AN/SPY-6 radars; and a 1.1 billion dollar award to scale AIM-9X Block II missile production to 2,500 units annually.
-Northrop Grumman (NOC) and General Dynamics (GD) saw modest share declines but had no major updates today.
-Boeing (BA) traded flat and reported no new developments, though it continues supporting key defense programs.
-Overall, U.S. defense stocks remained stable amid broader market volatility. Strong backlogs, rising demand for air and missile defense systems, and ongoing government support continue to underpin confidence in the sector through 2030.
+Defense stocks across the U.S. and Europe traded steadily today, with sentiment supported by strong contract pipelines and NATO-related policy signals.
+Lockheed Martin held near 459 dollars, with investors watching for further developments on its Long Range Discrimination Radar and Golden Dome missile defense program. Raytheon Technologies traded around 141 dollars following recent awards for SPY-6 radars and ESSM missile production. Northrop Grumman outperformed slightly, gaining on news of a co-production agreement with Lithuania and Nammo for medium-caliber ammunition—expanding its European manufacturing footprint.
+General Dynamics rose toward 286 dollars after securing a 987 million dollar U.S. Navy contract modification to continue supporting nuclear submarine development through 2031. In Europe, BAE Systems, Leonardo, and Rheinmetall showed modest strength as institutional interest followed NATO's new defense spending framework.
+BAE Systems continues to benefit from U.K. rearmament programs, while Leonardo remains central to Italy’s upcoming air defense procurement cycle. Rheinmetall's integration into NATO logistics planning, especially in Eastern Europe, has drawn analyst attention.
+Across both continents, defense equities remain fundamentally supported by rising procurement budgets, long-term contract visibility, and demand for high-readiness systems. Investors appeared focused on steady delivery and policy execution rather than near-term headlines.
 """)
 st.markdown("<div class='yellow-divider'></div>", unsafe_allow_html=True)
 # ========== COMPANIES SECTION ==========
