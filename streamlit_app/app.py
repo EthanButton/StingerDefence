@@ -124,8 +124,8 @@ def fetch_live_data():
     df = pd.read_csv("data/defense_companies.csv")
     df = df[df["ticker"].str.lower() != "not public"]
 # EXCLUDE index tickers before processing
-exclude_tickers = ["^GSPC", "^NDX", "^DJI", "^RUT", "^FTSE", "^STOXX50E", "^GDAXI", "^FCHI", "^N225", "^HSI", "STINGER_INDEX"]
-df = df[~df["ticker"].isin(exclude_tickers)]
+    exclude_tickers = ["^GSPC", "^NDX", "^DJI", "^RUT", "^FTSE", "^STOXX50E", "^GDAXI", "^FCHI", "^N225", "^HSI", "STINGER_INDEX"]
+    df = df[~df["ticker"].isin(exclude_tickers)]
 
     data = []
     for _, row in df.iterrows():
