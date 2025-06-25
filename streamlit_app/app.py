@@ -22,14 +22,12 @@ st.markdown("""
     margin-bottom: 2em;
     width: 100%;
 }
-.red-down {
-    color: red;
-    font-weight: normal;
-}
-.green-up {
-    color: green;
-    font-weight: bold;
-}
+.red-down { color: red; font-weight: normal; }
+.green-up { color: green; font-weight: bold; }
+.positive { color: green; font-weight: bold; }
+.negative { color: red; }
+td, th { padding: 6px 12px; text-align: left; }
+table { width: 100%; border-collapse: collapse; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -118,7 +116,7 @@ else:
 
 # ========== MARKET & COMPANIES OVERVIEW ==========
 st.markdown('<div id="market"></div>', unsafe_allow_html=True)
-st.subheader("\U0001F4CA Market & Companies Overview (Live)")
+st.subheader("📊 Market & Companies Overview (Live)")
 st.caption("Includes real-time price, % change, volume, market cap, P/E ratio, 52-week change — refreshes every 10s")
 
 @st.cache_data(ttl=10)
@@ -147,12 +145,11 @@ def fetch_live_data():
 
     df_live = pd.DataFrame(data)
     df_live["Indicator"] = df_live["Change %"].apply(
-        lambda x: f"<span class='green-up'>&#9650;</span>" if isinstance(x, float) and x > 0 else (f"<span class='red-down'>&#9660;</span>" if isinstance(x, float) and x < 0 else "")
+        lambda x: f"<span class='green-up'>&#9650;</span>" if isinstance(x, float) and x > 0 else (
+                  f"<span class='red-down'>&#9660;</span>" if isinstance(x, float) and x < 0 else "")
     )
     df_live["Change % Raw"] = df_live["Change %"]
-    df_live["Change %"] = df_live["Change %"].apply(
-        lambda x: f"{x:.2f}%" if isinstance(x, float) else "N/A"
-    )
+    df_live["Change %"] = df_live["Change %"].apply(lambda x: f"{x:.2f}%" if isinstance(x, float) else "N/A")
     df_live["Price"] = df_live["Price"].apply(lambda x: f"${x:,.2f}" if isinstance(x, (float, int)) else "N/A")
     df_live["Volume"] = df_live["Volume"].apply(lambda x: f"{int(x):,}" if isinstance(x, (int, float)) else "N/A")
     df_live["Market Cap"] = df_live["Market Cap"].apply(lambda x: f"${int(x):,}" if isinstance(x, (int, float)) else "N/A")
@@ -160,25 +157,73 @@ def fetch_live_data():
     df_live["52W Change"] = df_live["52W Change"].apply(lambda x: f"{x*100:.2f}%" if isinstance(x, float) else "N/A")
     return df_live
 
+# ======================== Display Section ========================
+
+def render_table(df):
+    def colorize(val):
+        try:
+            if isinstance(val, str) and "%" in val:
+                num = float(val.strip('%').replace(',', ''))
+            elif isinstance(val, str) and val.startswith('$'):
+                num = float(val.strip('$').replace(',', ''))
+            else:
+                num = float(val)
+            css = "positive" if num > 0 else "negative"
+            return f"<td class='{css}'>{val}</td>"
+        except:
+            return f"<td>{val}</td>"
+
+    headers = ''.join(f"<th>{col}</th>" for col in df.columns if col != "Change % Raw")
+    rows = []
+    for _, row in df.iterrows():
+        html_row = "<tr>"
+        for col in df.columns:
+            if col == "Change % Raw":
+                continue
+            html_row += colorize(row[col])
+        html_row += "</tr>"
+        rows.append(html_row)
+    return f"<table><thead><tr>{headers}</tr></thead><tbody>{''.join(rows)}</tbody></table>"
+
 try:
     df_live_display = fetch_live_data()
-    def highlight_gainers(val):
-        return 'font-weight: bold;' if isinstance(val, float) and val > 0 else ''
 
-    st.write("""
-    <style>
-    .stDataFrame tbody td div {
-        font-size: 15px;
+    # ====== Sorting Options ======
+    sort_options = ["Change %", "Price", "Volume", "Market Cap", "P/E Ratio", "52W Change"]
+    sort_by = st.selectbox("Sort by metric:", sort_options, index=0)
+    ascending = st.radio("Sort order:", ["Descending", "Ascending"]) == "Ascending"
+
+    sort_col_map = {
+        "Change %": "Change % Raw",
+        "Price": "Price",
+        "Volume": "Volume",
+        "Market Cap": "Market Cap",
+        "P/E Ratio": "P/E Ratio",
+        "52W Change": "52W Change"
     }
+    sort_col = sort_col_map[sort_by]
+    df_live_display = df_live_display.sort_values(by=sort_col, ascending=ascending)
+
+    df_live_display.drop(columns=["Change % Raw"], inplace=True)
+
+    # ====== Table Display ======
+    st.markdown("""
+    <style>
+    .stDataFrame tbody td div { font-size: 15px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 1em; }
+    th { text-align: left; padding: 6px 10px; font-weight: bold; border-bottom: 1px solid #444; }
+    td { padding: 6px 10px; }
+    .positive { color: green; font-weight: bold; }
+    .negative { color: red; }
     </style>
     """, unsafe_allow_html=True)
 
-    st.write(df_live_display.to_html(escape=False, index=False), unsafe_allow_html=True)
-except:
-    st.warning("Live stock data unavailable. Please check your data source or internet connection.")
+    st.write(render_table(df_live_display), unsafe_allow_html=True)
+
+except Exception as e:
+    st.warning(f"Live stock data unavailable. Error: {e}")
 
 st.markdown("<div class='yellow-divider'></div>", unsafe_allow_html=True)
-
 
 # ===== MARKET & COMPANIES NOTE =====
 st.markdown("### Market & Companies Note")
