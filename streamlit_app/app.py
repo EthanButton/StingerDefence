@@ -54,18 +54,15 @@ This tool is intended for informational and educational purposes only.
 """)
 st.markdown("<div class='yellow-divider'></div>", unsafe_allow_html=True)
 
-# ===== EDITORIAL INSIGHT =====
-st.markdown("### Editorial Insight")
+# ===== HEADLINES & GEOPOLITICAL NOTE =====
+st.markdown("### Headlines & Geopolitical Note")
 st.markdown("""
-Defense Industry Daily Summary – June 24, 2025
-
-The global defense landscape saw key developments today in military spending, international cooperation, and technology.
-At the NATO summit in The Hague, alliance leaders agreed to increase defense spending to 5% of GDP—3.5% for core military capabilities and 1.5% for infrastructure and cyber defense. This marks a major rise from the longstanding 2% target. Germany pledged to double its defense budget to €152.8 billion by 2029 and add 10,000 troops. Meanwhile, President Trump raised doubts about the U.S. commitment to NATO’s mutual defense clause, prompting concern among allies.
-The Paris Air Show highlighted growing defense priorities. Airbus announced 21 billion dollars in new aircraft orders and revealed the SIRTAP tactical UAV, set for delivery in 2027. The company also introduced upgrades to its MRTT+ tanker, including improved avionics and digital systems for coalition operations.
-In the Middle East, a ceasefire between Iran and Israel is currently holding following U.S. diplomatic pressure, though regional risks remain high.
-On the tech front, defense-data startup Obviant raised 7.1 million dollars to expand its platform for acquisition and budgeting analytics—signaling strong investor interest in defense-focused software.
-Today’s events underscore a shift toward higher defense investment and greater alliance integration amid rising global tension.""")
-
+NATO leaders today finalized a significant agreement to increase member-state defense spending to 5 percent of GDP by 2035. The new framework divides spending into 3.5 percent for core military systems and 1.5 percent for cybersecurity, logistics, and critical infrastructure. This move is expected to generate sustained demand for both U.S. and European defense firms across platforms, from aircraft to ammunition and early-warning systems.
+In Lithuania, Northrop Grumman signed a memorandum with the Ministry of Defense and Nammo to co-produce 20–50 mm ammunition locally. This marks a key step in NATO’s effort to regionalize critical supply chains and reduce reliance on external imports during crises.
+Meanwhile, Germany, Italy, and Norway all reaffirmed long-term capital commitments to their national defense industries, with emphasis on interoperability, indigenous production, and digital integration.
+There were no new regional flare-ups today, and the ceasefire between Iran and Israel continues to hold. With tensions cooling, investor focus has shifted back to structural investment, transatlantic defense partnerships, and industry-driven initiatives under the NATO 2035 framework.
+Overall, the day’s events strengthened confidence in defense sector stability, particularly for firms with transatlantic industrial ties and proven procurement capacity.
+""")
 # ========== NEWS SECTION ==========
 st.markdown('<div id="news"></div>', unsafe_allow_html=True)
 st.subheader("Latest Defense News")
