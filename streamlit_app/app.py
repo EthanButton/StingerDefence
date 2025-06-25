@@ -237,6 +237,7 @@ General Dynamics rose toward 286 dollars after securing a 987 million dollar U.S
 BAE Systems continues to benefit from U.K. rearmament programs, while Leonardo remains central to Italy’s upcoming air defense procurement cycle. Rheinmetall's integration into NATO logistics planning, especially in Eastern Europe, has drawn analyst attention.
 Across both continents, defense equities remain fundamentally supported by rising procurement budgets, long-term contract visibility, and demand for high-readiness systems. Investors appeared focused on steady delivery and policy execution rather than near-term headlines.
 """)
+
 st.markdown("<div class='yellow-divider'></div>", unsafe_allow_html=True)
 # ========== COMPANIES SECTION ==========
 st.subheader("Global Defense Companies")
