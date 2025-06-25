@@ -24,6 +24,8 @@ st.markdown("""
 }
 </style>
 """, unsafe_allow_html=True)
+.red-down { color: red; font-weight: normal; }
+.green-up { color: green; font-weight: bold; }
 
 # ========== What's Inside ==========
 st.markdown("""
@@ -110,83 +112,67 @@ else:
 
 # ========== MARKET & COMPANIES OVERVIEW ==========
 st.markdown('<div id="market"></div>', unsafe_allow_html=True)
-st.subheader("Market & Companies Overview")
-st.caption("Note: Changes reflect daily movement only.")
+st.subheader("\U0001F4CA Market & Companies Overview (Live)")
+st.caption("Includes real-time price, % change, volume, market cap, P/E ratio, 52-week change — refreshes every 10s")
 
-sort_option = st.selectbox("Sort companies by:", ["Change (Descending)", "Change (Ascending)", "Price (Descending)", "Price (Ascending)"])
+@st.cache_data(ttl=10)
+def fetch_live_data():
+    df = pd.read_csv("data/defense_companies.csv")
+    df = df[df["ticker"].str.lower() != "not public"]
+
+    data = []
+    for _, row in df.iterrows():
+        try:
+            stock = yf.Ticker(row["ticker"])
+            info = stock.info
+            current = {
+                "Company": row["name"],
+                "Ticker": row["ticker"],
+                "Price": info.get("regularMarketPrice", "N/A"),
+                "Change %": info.get("regularMarketChangePercent", 0.0),
+                "Volume": info.get("volume", "N/A"),
+                "Market Cap": info.get("marketCap", "N/A"),
+                "P/E Ratio": info.get("trailingPE", "N/A"),
+                "52W Change": info.get("52WeekChange", "N/A")
+            }
+            data.append(current)
+        except:
+            continue
+
+    df_live = pd.DataFrame(data)
+    df_live["Indicator"] = df_live["Change %"].apply(
+        lambda x: f"<span class='green-up'>&#9650;</span>" if isinstance(x, float) and x > 0 else (f"<span class='red-down'>&#9660;</span>" if isinstance(x, float) and x < 0 else "")
+    )
+    df_live["Change % Raw"] = df_live["Change %"]
+    df_live["Change %"] = df_live["Change %"].apply(
+        lambda x: f"{x:.2f}%" if isinstance(x, float) else "N/A"
+    )
+    df_live["Price"] = df_live["Price"].apply(lambda x: f"${x:,.2f}" if isinstance(x, (float, int)) else "N/A")
+    df_live["Volume"] = df_live["Volume"].apply(lambda x: f"{int(x):,}" if isinstance(x, (int, float)) else "N/A")
+    df_live["Market Cap"] = df_live["Market Cap"].apply(lambda x: f"${int(x):,}" if isinstance(x, (int, float)) else "N/A")
+    df_live["P/E Ratio"] = df_live["P/E Ratio"].apply(lambda x: f"{x:.2f}" if isinstance(x, (float, int)) else "N/A")
+    df_live["52W Change"] = df_live["52W Change"].apply(lambda x: f"{x*100:.2f}%" if isinstance(x, float) else "N/A")
+    return df_live
 
 try:
-    df_companies = pd.read_csv("data/defense_companies.csv")
-    df_companies = df_companies[df_companies["ticker"].str.lower() != "not public"]
+    df_live_display = fetch_live_data()
+    def highlight_gainers(val):
+        return 'font-weight: bold;' if isinstance(val, float) and val > 0 else ''
+
+    st.write("""
+    <style>
+    .stDataFrame tbody td div {
+        font-size: 15px;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+    st.write(df_live_display.to_html(escape=False, index=False), unsafe_allow_html=True)
 except:
-    df_companies = pd.DataFrame()
+    st.warning("Live stock data unavailable. Please check your data source or internet connection.")
 
-@st.cache_data(ttl=1800)
-def get_price_data(label, ticker):
-    try:
-        stock = yf.Ticker(ticker)
-        price = stock.info.get("regularMarketPrice", "N/A")
-        change = stock.info.get("regularMarketChangePercent", 0.0)
-        return {
-            "Company": label,
-            "Ticker": ticker,
-            "Price": price,
-            "Change": change
-        }
-    except:
-        return {
-            "Company": label,
-            "Ticker": ticker,
-            "Price": "N/A",
-            "Change": "N/A"
-        }
+st.markdown("<div class='yellow-divider'></div>", unsafe_allow_html=True)
 
-if not df_companies.empty:
-    index_tickers = ["^GSPC", "^NDX", "^DJI", "^RUT", "^FTSE", "^STOXX50E", "^GDAXI", "^FCHI", "^N225", "^HSI", "STINGER_INDEX"]
-    df_companies = df_companies[~df_companies["ticker"].isin(index_tickers)]
-    stock_data = [get_price_data(row["name"], row["ticker"]) for _, row in df_companies.iterrows()]
-
-    df_display = pd.DataFrame(stock_data)
-
-    if sort_option == "Change (Descending)":
-        df_display = df_display.sort_values(by="Change", ascending=False)
-    elif sort_option == "Change (Ascending)":
-        df_display = df_display.sort_values(by="Change", ascending=True)
-    elif sort_option == "Price (Descending)":
-        df_display = df_display.sort_values(by="Price", ascending=False)
-    elif sort_option == "Price (Ascending)":
-        df_display = df_display.sort_values(by="Price", ascending=True)
-
-    def style_row(row):
-        change = row["Change"]
-        if isinstance(change, float):
-            if change > 0:
-                return "🟢"
-            elif change < 0:
-                return "🔻"
-        return ""
-
-    df_display["Indicator"] = df_display.apply(style_row, axis=1)
-
-    def color_change(val):
-        if isinstance(val, str) and "%" in val:
-            try:
-                num = float(val.replace("%", ""))
-                if num > 0:
-                    return "color: green"
-                elif num < 0:
-                    return "color: red"
-            except:
-                return ""
-        return ""
-
-    df_display["Price"] = df_display["Price"].apply(lambda x: f"${x:,.2f}" if isinstance(x, float) else "N/A")
-    df_display["Change %"] = df_display["Change"].apply(lambda x: f"{x:.2f}%" if isinstance(x, float) else "N/A")
-    df_display.drop(columns=["Change"], inplace=True)
-
-    st.dataframe(df_display[["Indicator", "Company", "Ticker", "Price", "Change %"]].style.applymap(color_change, subset=["Change %"]), use_container_width=True)
-else:
-    st.warning("Company data not available.")
 
 # ===== MARKET & COMPANIES NOTE =====
 st.markdown("### Market & Companies Note")
