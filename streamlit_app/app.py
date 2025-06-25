@@ -22,11 +22,16 @@ st.markdown("""
     margin-bottom: 2em;
     width: 100%;
 }
+.red-down {
+    color: red;
+    font-weight: normal;
+}
+.green-up {
+    color: green;
+    font-weight: bold;
+}
 </style>
 """, unsafe_allow_html=True)
-.red-down { color: red; font-weight: normal; }
-.green-up { color: green; font-weight: bold; }
-
 # ========== What's Inside ==========
 st.markdown("""
 ### What's Inside
