@@ -120,7 +120,7 @@ st.caption("Includes real-time price, % change, volume, market cap, P/E ratio, 5
 def fetch_live_data():
     df = pd.read_csv("data/defense_companies.csv")
     df = df[df["ticker"].str.lower() != "not public"]
-# EXCLUDE index tickers before processing
+    # EXCLUDE index tickers before processing
     exclude_tickers = ["^GSPC", "^NDX", "^DJI", "^RUT", "^FTSE", "^STOXX50E", "^GDAXI", "^FCHI", "^N225", "^HSI", "STINGER_INDEX"]
     df = df[~df["ticker"].isin(exclude_tickers)]
 
@@ -187,11 +187,12 @@ def render_table(df):
 
 try:
     df_live_display = fetch_live_data()
-# ====== Company Search ======
-st.markdown("#### 🔍 Filter Companies by Name")
-company_search = st.text_input("Enter full or partial name:")
-if company_search:
-    df_live_display = df_live_display[df_live_display["Company"].str.contains(company_search, case=False)]
+
+    # ====== Company Search ======
+    st.markdown("#### 🔍 Filter Companies by Name")
+    company_search = st.text_input("Enter full or partial name:")
+    if company_search:
+        df_live_display = df_live_display[df_live_display["Company"].str.contains(company_search, case=False)]
 
     # ====== Sorting Options ======
     sort_options = ["Change %", "Price", "Volume", "Market Cap", "P/E Ratio", "52W Change"]
@@ -229,6 +230,7 @@ except Exception as e:
     st.warning(f"Live stock data unavailable. Error: {e}")
 
 st.markdown("<div class='yellow-divider'></div>", unsafe_allow_html=True)
+
 
 # ===== MARKET & COMPANIES NOTE =====
 st.markdown("### Market & Companies Note")
