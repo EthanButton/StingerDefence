@@ -187,6 +187,10 @@ def render_table(df):
 
 try:
     df_live_display = fetch_live_data()
+# ====== Company Search ======
+company_search = st.text_input("Search for a Company", "")
+if company_search:
+    df_live_display = df_live_display[df_live_display["Company"].str.contains(company_search, case=False)]
 
     # ====== Sorting Options ======
     sort_options = ["Change %", "Price", "Volume", "Market Cap", "P/E Ratio", "52W Change"]
