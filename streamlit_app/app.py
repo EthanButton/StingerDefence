@@ -112,16 +112,13 @@ else:
 
 
 # ========== MARKET & COMPANIES OVERVIEW ==========
-from streamlit_autorefresh import st_autorefresh  # make sure this is imported at the top
-
 st.markdown('<div id="market"></div>', unsafe_allow_html=True)
 st.subheader("Market & Companies Overview (Live)")
-st.caption("Includes real-time price, % change, volume, market cap, P/E ratio, 52-week change — refreshes every 10s")
+st.caption("Includes real-time price, % change, volume, market cap, P/E ratio, 52-week change — click Refresh to update")
 
-# Optional manual refresh
+# Manual refresh button
 if st.button("Refresh Now"):
-    st.experimental_rerun()
-
+    st.rerun()
 @st.cache_data(ttl=10)
 def fetch_live_data():
     df = pd.read_csv("data/defense_companies.csv")
