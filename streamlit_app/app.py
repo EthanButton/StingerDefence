@@ -77,7 +77,7 @@ def load_news():
     except FileNotFoundError:
         return pd.DataFrame()
 
-# Your official defense company list
+# Full list of defense companies (always shown in dropdown)
 valid_companies = sorted([
     "Lockheed Martin", "Raytheon Technologies", "Northrop Grumman", "General Dynamics",
     "L3Harris Technologies", "Huntington Ingalls Industries", "Textron", "Leidos",
@@ -93,41 +93,43 @@ news_df = load_news()
 if news_df.empty:
     st.warning("No news data found.")
 else:
-    # Normalize company names from CSV
     news_df["company"] = news_df["company"].astype(str).str.strip()
+    selected_company = st.selectbox("Filter by Company", ["All"] + valid_companies)
 
-    # Intersect with official list
-    available_companies = sorted(set(news_df["company"]) & set(valid_companies))
-    selected_company = st.selectbox("Filter by Company", ["All"] + available_companies)
+    if selected_company == "All":
+        filtered = news_df
+    else:
+        filtered = news_df[news_df["company"].str.strip() == selected_company]
 
-    filtered = news_df if selected_company == "All" else news_df[news_df["company"] == selected_company]
     filtered = filtered.sort_values(by="published", ascending=False)
-
     show_all = st.toggle("Show All News", value=False)
     news_to_show = filtered if show_all else filtered.head(5)
 
-    st.caption(f"Showing {'all' if show_all else 'latest 5'} news items for **{selected_company}**")
+    if filtered.empty:
+        st.info(f"No news found for {selected_company}.")
+    else:
+        st.caption(f"Showing {'all' if show_all else 'latest 5'} news items for **{selected_company}**")
 
-    for _, row in news_to_show.iterrows():
-        with st.container():
-            st.markdown(f"### [{row['title']}]({row['link']})")
-            st.caption(f"{row['published']} — {row['company']}")
+        for _, row in news_to_show.iterrows():
+            with st.container():
+                st.markdown(f"### [{row['title']}]({row['link']})")
+                st.caption(f"{row['published']} — {row['company']}")
 
-            summary_parts = []
+                summary_parts = []
 
-            if re.search(r"\$\d+[\.\d]*\s*(million|billion)?", row["title"], re.IGNORECASE):
-                summary_parts.append("Possible contract value mentioned.")
+                if re.search(r"\$\d+[\.\d]*\s*(million|billion)?", row["title"], re.IGNORECASE):
+                    summary_parts.append("Possible contract value mentioned.")
 
-            keywords = ["missile", "radar", "ship", "drone", "contract", "aircraft", "satellite", "cyber", "$", "million", "billion"]
-            matches = [kw for kw in keywords if re.search(kw, row["title"], re.IGNORECASE)]
+                keywords = ["missile", "radar", "ship", "drone", "contract", "aircraft", "satellite", "cyber", "$", "million", "billion"]
+                matches = [kw for kw in keywords if re.search(kw, row["title"], re.IGNORECASE)]
 
-            if matches:
-                summary_parts.append("Keywords: " + ", ".join(matches))
+                if matches:
+                    summary_parts.append("Keywords: " + ", ".join(matches))
 
-            if summary_parts:
-                st.markdown("**Summary Insight:** " + " | ".join(summary_parts))
+                if summary_parts:
+                    st.markdown("**Summary Insight:** " + " | ".join(summary_parts))
 
-            st.markdown("<div class='yellow-divider'></div>", unsafe_allow_html=True)
+                st.markdown("<div class='yellow-divider'></div>", unsafe_allow_html=True)
 
 # ========== MARKET & COMPANIES OVERVIEW ==========
 st.markdown('<div id="market"></div>', unsafe_allow_html=True)
