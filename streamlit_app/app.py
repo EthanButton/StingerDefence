@@ -67,6 +67,9 @@ No significant conflict emerged today, allowing markets to focus on strategic bu
 st.markdown('<div id="news"></div>', unsafe_allow_html=True)
 st.subheader("Latest Defense News")
 
+import re
+import pandas as pd
+
 @st.cache_data(ttl=1800)
 def load_news():
     try:
@@ -74,13 +77,25 @@ def load_news():
     except FileNotFoundError:
         return pd.DataFrame()
 
+# Full list of your defense companies
+valid_companies = sorted([
+    "Lockheed Martin", "Raytheon Technologies", "Northrop Grumman", "General Dynamics",
+    "L3Harris Technologies", "Huntington Ingalls Industries", "Textron", "Leidos",
+    "Mercury Systems", "Kratos Defense", "Curtiss-Wright", "CACI International",
+    "Boeing", "Oshkosh Corporation", "BAE Systems", "Thales", "Rheinmetall",
+    "Saab AB", "Leonardo S.p.A.", "Kongsberg Gruppen", "Airbus", "Dassault Aviation",
+    "Hensoldt AG", "Elbit Systems", "Babcock International", "Serco Group",
+    "Rolls-Royce Holdings", "QinetiQ Group", "MTU Aero Engines"
+])
+
 news_df = load_news()
 
 if news_df.empty:
     st.warning("No news data found.")
 else:
-    companies = sorted(news_df["company"].dropna().unique())
-    selected_company = st.selectbox("Filter by Company", ["All"] + companies)
+    # Filter dropdown to only show valid companies from your list that exist in the data
+    available_companies = sorted(set(news_df["company"].dropna()) & set(valid_companies))
+    selected_company = st.selectbox("Filter by Company", ["All"] + available_companies)
 
     filtered = news_df if selected_company == "All" else news_df[news_df["company"] == selected_company]
     filtered = filtered.sort_values(by="published", ascending=False)
@@ -96,10 +111,11 @@ else:
             st.caption(f"{row['published']} — {row['company']}")
 
             summary_parts = []
-            if re.search(r"\\$\\d+[.\\d]*\\s*(million|billion)?", row["title"], re.IGNORECASE):
+
+            if re.search(r"\$\d+[\.\d]*\s*(million|billion)?", row["title"], re.IGNORECASE):
                 summary_parts.append("Possible contract value mentioned.")
 
-            keywords = ["missile", "radar", "ship", "drone", "contract", "aircraft", "satellite", "cyber", "$", "Million", "Billion"]
+            keywords = ["missile", "radar", "ship", "drone", "contract", "aircraft", "satellite", "cyber", "$", "million", "billion"]
             matches = [kw for kw in keywords if re.search(kw, row["title"], re.IGNORECASE)]
 
             if matches:
@@ -109,7 +125,6 @@ else:
                 st.markdown("**Summary Insight:** " + " | ".join(summary_parts))
 
             st.markdown("<div class='yellow-divider'></div>", unsafe_allow_html=True)
-
 
 # ========== MARKET & COMPANIES OVERVIEW ==========
 st.markdown('<div id="market"></div>', unsafe_allow_html=True)
