@@ -57,12 +57,12 @@ st.markdown("<div class='yellow-divider'></div>", unsafe_allow_html=True)
 # ===== HEADLINES & GEOPOLITICAL NOTE =====
 st.markdown("### Headlines & Geopolitical Note")
 st.markdown("""
-NATO leaders today finalized a significant agreement to increase member-state defense spending to 5 percent of GDP by 2035. The new framework divides spending into 3.5 percent for core military systems and 1.5 percent for cybersecurity, logistics, and critical infrastructure. This move is expected to generate sustained demand for both U.S. and European defense firms across platforms, from aircraft to ammunition and early-warning systems.
-In Lithuania, Northrop Grumman signed a memorandum with the Ministry of Defense and Nammo to co-produce 20–50 mm ammunition locally. This marks a key step in NATO’s effort to regionalize critical supply chains and reduce reliance on external imports during crises.
-Meanwhile, Germany, Italy, and Norway all reaffirmed long-term capital commitments to their national defense industries, with emphasis on interoperability, indigenous production, and digital integration.
-There were no new regional flare-ups today, and the ceasefire between Iran and Israel continues to hold. With tensions cooling, investor focus has shifted back to structural investment, transatlantic defense partnerships, and industry-driven initiatives under the NATO 2035 framework.
-Overall, the day’s events strengthened confidence in defense sector stability, particularly for firms with transatlantic industrial ties and proven procurement capacity.
+NATO leaders today affirmed the 5 percent of GDP defense spending framework at the summit in The Hague. The commitment (3.5 percent for core military, 1.5 percent for infrastructure and cybersecurity) continues to catalyze defense investment across member states :contentReference[oaicite:5]{index=5}.
+Germany unveiled a 700 million dollar ammunition plant deal in Lithuania, executed jointly with Rheinmetall. This initiative supports regional resilience and aligns with broader NATO supply chain goals :contentReference[oaicite:6]{index=6}.
+The EU’s Readiness 2030 program was reconfirmed, allocating up to 800 billion euros over two years to reinforce industrial capacity, joint procurement, and cyber defense across Europe :contentReference[oaicite:7]{index=7}.
+No significant conflict emerged today, allowing markets to focus on strategic budget implementation, European defense industrial partnerships, and execution of long-term procurement—maintaining the positive tone established after the NATO summit.
 """)
+
 # ========== NEWS SECTION ==========
 st.markdown('<div id="news"></div>', unsafe_allow_html=True)
 st.subheader("Latest Defense News")
@@ -235,11 +235,11 @@ except Exception as e:
 # ===== MARKET & COMPANIES NOTE =====
 st.markdown("### Market & Companies Note")
 st.markdown("""
-Defense stocks across the U.S. and Europe traded steadily today, with sentiment supported by strong contract pipelines and NATO-related policy signals.
-Lockheed Martin held near 459 dollars, with investors watching for further developments on its Long Range Discrimination Radar and Golden Dome missile defense program. Raytheon Technologies traded around 141 dollars following recent awards for SPY-6 radars and ESSM missile production. Northrop Grumman outperformed slightly, gaining on news of a co-production agreement with Lithuania and Nammo for medium-caliber ammunition—expanding its European manufacturing footprint.
-General Dynamics rose toward 286 dollars after securing a 987 million dollar U.S. Navy contract modification to continue supporting nuclear submarine development through 2031. In Europe, BAE Systems, Leonardo, and Rheinmetall showed modest strength as institutional interest followed NATO's new defense spending framework.
-BAE Systems continues to benefit from U.K. rearmament programs, while Leonardo remains central to Italy’s upcoming air defense procurement cycle. Rheinmetall's integration into NATO logistics planning, especially in Eastern Europe, has drawn analyst attention.
-Across both continents, defense equities remain fundamentally supported by rising procurement budgets, long-term contract visibility, and demand for high-readiness systems. Investors appeared focused on steady delivery and policy execution rather than near-term headlines.
+Today’s trading showed positive momentum across key U.S. defense names, backed by NATO and industrial developments in Europe.
+Lockheed Martin LMT climbed near 461 dollars on strengthening sentiment around LRDR and Golden Dome production momentum. Raytheon Technologies RTX rose to about 143 dollars after recent U.S. Navy radar contract deliveries.
+Northrop Grumman NOC jumped to nearly 496 dollars following news of expanded ammunition co production in Lithuania and ongoing development of integrated air defense systems. General Dynamics GD advanced toward 292 dollars, supported by its ongoing submarine support contract.
+In Europe, Rheinmetall shares edged higher as Germany committed to build a 155 mm ammunition plant in Lithuania and brokered a strategic partnership with India’s Reliance Defense. BAE Systems saw a modest uptick amid increased U.K. procurement and confirmation of its role in the Global Combat Air Programme with Leonardo. Leonardo remained elevated as Italy demonstrated its commitment to the GCAP timeline and funding.
+Overall, both U.S. and European defense equities sustained gains reflecting supportive spending policies, active procurement, and cross border cooperation.
 """)
 
 st.markdown("<div class='yellow-divider'></div>", unsafe_allow_html=True)
