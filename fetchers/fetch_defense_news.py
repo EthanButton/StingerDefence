@@ -4,7 +4,7 @@ import pandas as pd
 
 COMPANIES = [
     "Lockheed Martin", "Raytheon", "Northrop Grumman", "General Dynamics",
-    "L3Harris", "BAE Systems", "Airbus", "Boeing", "Thales", "Leonardo"
+    "L3Harris", "BAE Systems", "Airbus", "Boeing", "Thales", "Leonardo", "Huntington Ingalls", "Textron", "Leidos", "Mercury Systems", "Kratos", "Curtiss-Wright", "CACI International", "Oshkosh", "Rheinmetall", "Saab", "Kongsberg Gruppen", "Dassault Aviation", "Hensoldt AG", "Elbit Systems", "Babcock International", "Serco Group", "Rolls-Royce Holdings", "QinetiQ Group", "MTU Aero Engines"
 ]
 
 def fetch_news():
