@@ -77,7 +77,7 @@ def load_news():
     except FileNotFoundError:
         return pd.DataFrame()
 
-# Full list of your defense companies
+# Your official defense company list
 valid_companies = sorted([
     "Lockheed Martin", "Raytheon Technologies", "Northrop Grumman", "General Dynamics",
     "L3Harris Technologies", "Huntington Ingalls Industries", "Textron", "Leidos",
@@ -93,8 +93,11 @@ news_df = load_news()
 if news_df.empty:
     st.warning("No news data found.")
 else:
-    # Filter dropdown to only show valid companies from your list that exist in the data
-    available_companies = sorted(set(news_df["company"].dropna()) & set(valid_companies))
+    # Normalize company names from CSV
+    news_df["company"] = news_df["company"].astype(str).str.strip()
+
+    # Intersect with official list
+    available_companies = sorted(set(news_df["company"]) & set(valid_companies))
     selected_company = st.selectbox("Filter by Company", ["All"] + available_companies)
 
     filtered = news_df if selected_company == "All" else news_df[news_df["company"] == selected_company]
