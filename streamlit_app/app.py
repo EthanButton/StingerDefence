@@ -112,16 +112,14 @@ else:
 
 
 # ========== MARKET & COMPANIES OVERVIEW ==========
-from streamlit_autorefresh import st_autorefresh  # ✅ make sure this is imported at the top
-
-st_autorefresh(interval=10 * 1000, key="market_refresh")  # ✅ Auto-refresh every 10s
+from streamlit_autorefresh import st_autorefresh  # make sure this is imported at the top
 
 st.markdown('<div id="market"></div>', unsafe_allow_html=True)
 st.subheader("Market & Companies Overview (Live)")
 st.caption("Includes real-time price, % change, volume, market cap, P/E ratio, 52-week change — refreshes every 10s")
 
-# ✅ Optional manual refresh
-if st.button("🔁 Refresh Now"):
+# Optional manual refresh
+if st.button("Refresh Now"):
     st.experimental_rerun()
 
 @st.cache_data(ttl=10)
