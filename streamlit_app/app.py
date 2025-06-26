@@ -294,27 +294,14 @@ st.subheader("Stock & Index Tracker")
 try:
     df_stocks = pd.read_csv("data/defense_companies.csv")
     df_stocks = df_stocks[df_stocks["ticker"].str.lower() != "not public"]
+    stock_name_to_ticker = {row["name"]: row["ticker"] for _, row in df_stocks.iterrows()}
 
-    # Index data for separate dropdown
     index_tickers = {
         "S&P 500": "^GSPC", "Nasdaq 100": "^NDX", "Dow Jones": "^DJI",
         "Russell 2000": "^RUT", "FTSE 100": "^FTSE", "Euro Stoxx 50": "^STOXX50E",
         "DAX": "^GDAXI", "CAC 40": "^FCHI", "Nikkei 225": "^N225", "Hang Seng": "^HSI",
         "Stinger Defense Index": "STINGER_INDEX"
     }
-
-    index_names = set(index_tickers.keys())
-    index_ticker_values = set(index_tickers.values())
-
-    # Exclude index entries from stock mapping
-    stock_name_to_ticker = {
-        row["name"]: row["ticker"]
-        for _, row in df_stocks.iterrows()
-        if row["name"] not in index_names and row["ticker"] not in index_ticker_values
-    }
-
-except Exception as e:
-    st.error(f"Could not load data: {e}")
 
     col1, col2 = st.columns(2)
     with col1:
